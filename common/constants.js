@@ -1,6 +1,6 @@
-const BASE_URL = "https://api.pre-dev.tegro.com";
-const CHAIN_ID = 80002;
-const verifyingContract = "0x67329295F50e6aB7B90d9a2Dccb7E036cf39D9D6";
+const BASE_URL = process.env.BASE_URL;
+const CHAIN_ID = process.env.CHAIN_ID;
+const verifyingContract = process.env.verifyingContract;
 
 const CREATE_ORDER_URL = `${BASE_URL}/api/v1/trading/market/orders/place`;
 

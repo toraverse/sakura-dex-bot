@@ -19,13 +19,11 @@ const tradingBotLib = {
     async initMarket(_marketSymbol) {
         marketSymbol = _marketSymbol;
         try {
+            console.log("Trying to fetch market details for " + marketSymbol);
             const marketInfoReq = await axios.get(constants.GetMarketInfoUrl(marketSymbol));
-            
-            console.log("marketInfoReq:", marketInfoReq.data);
-            
             const marketData = marketInfoReq.data.data[0];
+            console.log("Successfully fetched market details for " + marketSymbol);
 
-            console.log("marketData ", marketData);
             this.baseDecimals = marketData.base_decimal;
             this.quoteDecimals = marketData.quote_decimal;
             this.baseTokenAddress = marketData.base_contract_address;
