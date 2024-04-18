@@ -1,6 +1,6 @@
 const { ethers } = require("ethers");
 const axios = require('axios');
-const tradingBotLib = require("./common/trading-lib");
+const tradingBotLib = require("../common/trading-lib");
 require('dotenv').config();
 
 const marketSymbol = "WETH_USDT";
