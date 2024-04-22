@@ -1,12 +1,16 @@
 const BASE_URL = process.env.BASE_URL;
-const CHAIN_ID = process.env.CHAIN_ID;
+const CHAIN_ID = parseInt(process.env.CHAIN_ID);
 const verifyingContract = process.env.verifyingContract;
+
+const GECKO_TERMINAL_BASE_URL = process.env.GECKO_TERMINAL_BASE_URL;
 
 const CREATE_ORDER_URL = `${BASE_URL}/api/v1/trading/market/orders/place`;
 
 const GENERATE_ORDER_URL = `${BASE_URL}/api/v1/trading/market/orders/typedData/generate`;
 
-const CANCEL_ALL_ORDERS_URL = `${BASE_URL}/market/orders/cancelAll`;
+const CANCEL_ALL_ORDERS_URL = `${BASE_URL}/api/v1/trading/market/orders/cancel-all`;
+
+const CANCEL_ORDER_URL = `${BASE_URL}/api/v1/trading/market/orders/cancel`;
 
 function GetUserOrdersUrl(userAddress) {
     return `${BASE_URL}/api/v1/trading/market/orders/user?chain_id=${CHAIN_ID}&user_address=${userAddress.toLowerCase()}`;
@@ -29,10 +33,10 @@ function GetUserOrdersURL(wallet) {
 }
 
 const DOMAIN = {
-  name: "TegroDEX",
-  version: "1",
-  chainId: CHAIN_ID,
-  verifyingContract: verifyingContract,
+    name: "TegroDEX",
+    version: "1",
+    chainId: CHAIN_ID,
+    verifyingContract: verifyingContract,
 };
 
 const TYPE = {
@@ -64,10 +68,6 @@ const TYPE = {
         {
             "name": "maker",
             "type": "address"
-        },
-        {
-            "name": "expiryTimestamp",
-            "type": "uint256"
         }
     ]
 }
@@ -79,6 +79,7 @@ module.exports = {
     GENERATE_ORDER_URL,
     CANCEL_ALL_ORDERS_URL,
     DOMAIN,
+    CANCEL_ORDER_URL,
     TYPE,
     GetUserOrdersUrl,
     GetActiveOrdersUrl,

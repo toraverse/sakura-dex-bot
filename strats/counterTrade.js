@@ -3,7 +3,7 @@ const axios = require('axios');
 const tradingBotLib = require("../common/trading-lib");
 require('dotenv').config();
 
-const marketSymbol = "WETH_USDT";
+const marketSymbol = "WETH_USDT"; //Tegro market (target)
 
 async function main() {
     const marketInfoReq = await tradingBotLib.initMarket(marketSymbol);

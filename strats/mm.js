@@ -1,7 +1,6 @@
 const tradingBotLib = require('../common/trading-lib');
-require('dotenv').config();
 
-const marketSymbol = "WETH_USDT";
+const marketSymbol = "WETH_USDC";
 
 mutex = false;
 const orderLevels = 10;
