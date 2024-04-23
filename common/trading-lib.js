@@ -50,7 +50,6 @@ const tradingBotLib = {
     },
 
     async placeOrder(side, precisionPrice, precisionVolume) {
-        console.log(`Trying to place an order for: ${precisionPrice} ${precisionVolume}`);
 
         if (precisionPrice <= 0 || precisionVolume <= 0) {
             console.log("Invalid order price or volume");
@@ -58,6 +57,8 @@ const tradingBotLib = {
 
         precisionPrice = Math.floor(precisionPrice);
         precisionVolume = Math.floor(precisionVolume);
+
+        console.log(`Trying to place an order for: ${precisionPrice} ${precisionVolume}`);
 
         let rawData;
 
@@ -69,6 +70,8 @@ const tradingBotLib = {
             throw new Error(`Invalid order side: ${side}`);
         }
 
+
+
         rawData = {
             baseToken: this.baseTokenAddress,
             isBuy: side === 1 ? true : false,
@@ -78,7 +81,6 @@ const tradingBotLib = {
             salt: this.generateSalt(),
             totalQuantity: precisionVolume.toString()
         };
-
         const signature = await this.signOrder(rawData);
 
         const orderHash = TypedDataEncoder.hash(constants.DOMAIN, constants.TYPE, rawData).toString();
@@ -179,6 +181,11 @@ const tradingBotLib = {
         } catch (error) {
             console.error("Error in getDepth:", error);
         }
+    },
+
+    async getBalance(tokenAddress) {
+        const balance = await axios.get(constants.GetBalanceForToken(wallet.address, tokenAddress));
+        return Number(balance.data.data);
     },
 
     countOrderTypes(orders) {
