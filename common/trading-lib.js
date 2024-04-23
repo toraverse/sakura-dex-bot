@@ -70,8 +70,6 @@ const tradingBotLib = {
             throw new Error(`Invalid order side: ${side}`);
         }
 
-
-
         rawData = {
             baseToken: this.baseTokenAddress,
             isBuy: side === 1 ? true : false,
