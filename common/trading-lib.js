@@ -20,7 +20,7 @@ const tradingBotLib = {
     async initMarket(_marketSymbol) {
         marketSymbol = _marketSymbol;
         try {
-            console.log("Trying to fetch market details for " + marketSymbol);
+            console.log("Trying to fetch market details for " + constants.GetMarketInfoUrl(marketSymbol));
             const marketInfoReq = await axios.get(constants.GetMarketInfoUrl(marketSymbol));
             const marketData = marketInfoReq.data.data[0];
             this.baseDecimals = marketData.base_decimal;
@@ -73,15 +73,16 @@ const tradingBotLib = {
             price: precisionPrice.toString(),
             quoteToken: this.quoteTokenAddress,
             salt: this.generateSalt(),
-            totalQuantity: precisionVolume.toString()
+            totalQuantity: precisionVolume.toString(),
+            expiryTime: '0'
         };
         const signature = await this.signOrder(rawData);
 
         const orderHash = TypedDataEncoder.hash(constants.DOMAIN, constants.TYPE, rawData).toString();
         const limit_order = {
             chain_id: constants.CHAIN_ID,
-            base_asset: this.baseTokenAddress,
-            quote_asset: this.quoteTokenAddress,
+            base_asset: side == 1 ? this.quoteTokenAddress : this.baseTokenAddress,
+            quote_asset: side == 1 ? this.baseTokenAddress : this.quoteTokenAddress,
             side: side,
             volume_precision: precisionVolume.toString(),
             price_precision: precisionPrice.toString(),
@@ -98,8 +99,9 @@ const tradingBotLib = {
             const createOrderRequest = await axios.post(constants.CREATE_ORDER_URL, limit_order);
             return createOrderRequest.data;
         } catch (error) {
-            console.error("Error in placeOrder");
-            //throw error;
+            console.log(JSON.stringify(limit_order));
+            //console.error("Error in placeOrder");
+            throw error;
         }
     },
 
@@ -159,9 +161,10 @@ const tradingBotLib = {
     },
 
     filterActiveOrdersBySide(jsonArray, type) {
-        return jsonArray.filter(item => item.side === type);
+        let filteredOrders = jsonArray.filter(item => item.marketId === this.marketId);
+        return filteredOrders.filter(item => item.side === type);
     },
-    
+
     sortOrdersByPrice(jsonArray) {
         return jsonArray.sort((a, b) => a.price - b.price);
     },

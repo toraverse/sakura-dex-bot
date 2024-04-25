@@ -69,6 +69,10 @@ const TYPE = {
         {
             "name": "maker",
             "type": "address"
+        },
+        {
+            "name": "expiryTime",
+            "type": "uint256"
         }
     ]
 }
