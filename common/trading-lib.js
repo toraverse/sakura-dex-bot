@@ -28,10 +28,6 @@ const tradingBotLib = {
             this.baseTokenAddress = marketData.base_contract_address;
             this.quoteTokenAddress = marketData.quote_contract_address;
             this.marketId = marketData.id;
-            // console.log("Base Token Address:", this.baseTokenAddress);
-            // console.log("Quote Token Address:", this.quoteTokenAddress);
-            // console.log("Base Decimals:", this.baseDecimals);
-            // console.log("Quote Decimals:", this.quoteDecimals);
             return marketData;
         } catch (error) {
             console.error("Error in initMarket:", error);
@@ -102,8 +98,8 @@ const tradingBotLib = {
             const createOrderRequest = await axios.post(constants.CREATE_ORDER_URL, limit_order);
             return createOrderRequest.data;
         } catch (error) {
-            console.error("Error in placeOrder:", error);
-            throw error;
+            console.error("Error in placeOrder");
+            //throw error;
         }
     },
 
@@ -162,8 +158,12 @@ const tradingBotLib = {
         }
     },
 
-    filterActiveOrders(jsonArray) {
-        return jsonArray.filter(item => item.status === "Active");
+    filterActiveOrdersBySide(jsonArray, type) {
+        return jsonArray.filter(item => item.side === type);
+    },
+    
+    sortOrdersByPrice(jsonArray) {
+        return jsonArray.sort((a, b) => a.price - b.price);
     },
 
     async getLastTradedPrice() {

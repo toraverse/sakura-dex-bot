@@ -34,40 +34,52 @@ async function manageOrders(priceLevels, quantities, type) {
     const openOrders = await tradingBotLib.getActiveOrders();
     const filteredOrders = tradingBotLib.filterActiveOrdersBySide(openOrders, type);
 
-    const priceRange = {
-        min: Math.min(...priceLevels),
-        max: Math.max(...priceLevels)
-    };
 
-    console.log("Maximum price level for: " + type + " " + Math.max(...priceLevels));
-    console.log("Minimum price level for: " + type + " " + Math.min(...priceLevels));
+    // Sort both priceLevels and filteredOrders by price for efficient comparison
+    priceLevels.sort((a, b) => a - b);
+    filteredOrders.sort((a, b) => a.price - b.price);
 
-    const ordersToPlace = [];
+    let orderIndex = 0; // Index for existing orders
+    let levelIndex = 0; // Index for new price levels
+    
+    while (levelIndex < priceLevels.length) {
+        const price = priceLevels[levelIndex];
+        const quantity = quantities[levelIndex];
+        const tolerance = price * 0.01;
 
-    // Determine which orders to cancel and which to place
-    for (let order of filteredOrders) {
-        let order_price = (order.price / order.quantity) * 10 ** tradingBotLib.quoteDecimals;
-        if (order_price < priceRange.min || order_price > priceRange.max) {
-            await tradingBotLib.cancelOrder(order.orderId).catch(console.error);
-            console.log(`Cancelled order ${order.orderId} at price ${order_price}, out of current price range.`);
-        } else {
-            // Check if the order still fits within the desired parameters
-            const index = priceLevels.findIndex(price => Math.abs(order.price - price) / price < 0.01);
-            if (index !== -1 && Math.abs(order.quantity * 10 ** tradingBotLib.baseDecimals - quantities[index]) / quantities[index] < 0.1) {
-                priceLevels.splice(index, 1);
-                quantities.splice(index, 1);
-            }
-            console.log(`Order ${order.orderId} is valid at price ${order_price}.`);
+        while (orderIndex < filteredOrders.length && filteredOrders[orderIndex].price < price * (1 - tolerance)) {
+            // Cancel all orders that are below the current price level minus tolerance
+            await tradingBotLib.cancelOrder(filteredOrders[orderIndex].orderId).catch(console.error);
+            console.log(`Cancelled order ${filteredOrders[orderIndex].orderId} at price ${filteredOrders[orderIndex].price}, out of current price range.`);
+            orderIndex++;
         }
+
+        if (orderIndex < filteredOrders.length && Math.abs(filteredOrders[orderIndex].price - price) / price < tolerance) {
+            // Existing order is within tolerance, check quantity
+            if (Math.abs(filteredOrders[orderIndex].quantity - quantity) / quantity < tolerance) {
+                // Order is valid, skip placing a new one
+                orderIndex++;
+            } else {
+                // Quantity differs, place new order
+                await tradingBotLib.placeOrder(type, price, quantity).then(() => {
+                    console.log(`${type.charAt(0).toUpperCase() + type.slice(1)} order placed: ${quantity} at ${price}`);
+                }).catch(console.error);
+            }
+        } else {
+            // No valid order exists, place a new one
+            await tradingBotLib.placeOrder(type, price, quantity).then(() => {
+                console.log(`${type.charAt(0).toUpperCase() + type.slice(1)} order placed: ${quantity} at ${price}`);
+            }).catch(console.error);
+        }
+
+        levelIndex++;
     }
 
-    // Place new orders for remaining price levels
-    for (let i = 0; i < priceLevels.length; i++) {
-        const price = priceLevels[i];
-        const quantity = quantities[i];
-        await tradingBotLib.placeOrder(type, price, quantity).then(() => {
-            console.log(`${type.charAt(0).toUpperCase() + type.slice(1)} order placed: ${quantity} at ${price}`);
-        }).catch(console.error);
+    // Cancel any remaining out-of-bound orders
+    while (orderIndex < filteredOrders.length) {
+        await tradingBotLib.cancelOrder(filteredOrders[orderIndex].orderId).catch(console.error);
+        console.log(`Cancelled order ${filteredOrders[orderIndex].orderId} at price ${filteredOrders[orderIndex].price}, out of current price range.`);
+        orderIndex++;
     }
 }
 
