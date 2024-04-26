@@ -1,106 +1,107 @@
 const tradingBotLib = require('../common/trading-lib');
 const geckoTerminalLib = require("../common/gecko-terminal");
 
-const chain = "base";
-const baseTokenAddress = "0x4200000000000000000000000000000000000006";  //Uniswap market GeckoTerminal (source)
-const quoteTokenAddress = "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
-const marketSymbol = "WETH_USDC"; //Tegro market (target)
+const chain = "base"; //source chain    
+const sourceTokenAddress = "0x4200000000000000000000000000000000000006"; // Uniswap market GeckoTerminal (source)
+const marketSymbol = "WETH_USDT"; // Tegro market (target)
+
+const priceStepLevels = [0.01, 0.1, 0.2]; // Percentage steps for price levels (buy & sell)
+const walletAllocation = [20, 30, 40]; // Percentage allocation of the wallet for each order
 
 async function fetchCurrentPriceInPrecision() {
-    floatPrice = await geckoTerminalLib.getPrice(chain, baseTokenAddress);
+    const floatPrice = await geckoTerminalLib.getPrice(chain, sourceTokenAddress);
+    console.log(`Fetched current price: ${floatPrice}`);
     return floatPrice * 10 ** tradingBotLib.quoteDecimals;
 }
 
 function calculatePriceLevels(basePrice, percentages, type) {
-    return percentages.map(percentage => basePrice * (1 + (type === 'sell' ? 1 : -1) * percentage / 100));
+    const priceLevels = percentages.map(percentage => basePrice * (1 + (type === 'sell' ? 1 : -1) * percentage / 100));
+    console.log(`Calculated ${type} price levels: ${priceLevels}`);
+    return priceLevels;
 }
 
 function calculateQuantities(priceLevels, balance, percentages) {
-    return priceLevels.map((priceLevel, index) => {
-        const totalPrice = (balance * (percentages[index] / 100));
-        const quantity = (totalPrice / priceLevel) * (10 ** tradingBotLib.baseDecimals);
+    const quantities = priceLevels.map((priceLevel, index) => {
+        const totalPrice = balance * (percentages[index] / 100);
+        const quantity = totalPrice / priceLevel * (10 ** tradingBotLib.baseDecimals);
         return quantity;
     });
+    console.log(`Calculated quantities: ${quantities}`);
+    return quantities;
 }
 
 function calculateSellQuantities(priceLevels, balance, percentages) {
-    return priceLevels.map((priceLevel, index) => {
-        const quantity = (balance * (percentages[index] / 100));
-        return quantity;
-    });
+    const quantities = priceLevels.map((priceLevel, index) => balance * (percentages[index] / 100));
+    console.log(`Calculated sell quantities: ${quantities}`);
+    return quantities;
+}
+
+async function cancelOrders() {
+    const openOrders = await tradingBotLib.getActiveOrders();
+    console.log(`Fetched ${openOrders.length} active orders from the market.`);
+
+    // Cancel all existing orders of the same type
+    for (const order of openOrders) {
+        console.log(`Cancelling order ${order.orderId}...`);
+        await tradingBotLib.cancelOrder(order.orderId).catch(err => console.error(`Failed to cancel order ${order.orderId}:`, err));
+    }
 }
 
 async function manageOrders(priceLevels, quantities, type) {
-    const openOrders = await tradingBotLib.getActiveOrders();
-    const filteredOrders = tradingBotLib.filterActiveOrdersBySide(openOrders, type);
 
+    // const openOrders = await tradingBotLib.getActiveOrders();
+    // console.log(`Fetched ${openOrders.length} active orders from the market.`);
 
-    // Sort both priceLevels and filteredOrders by price for efficient comparison
-    priceLevels.sort((a, b) => a - b);
-    filteredOrders.sort((a, b) => a.price - b.price);
+    // const filteredOrders = tradingBotLib.filterActiveOrdersBySide(openOrders, type);
+    // console.log(`Filtered ${filteredOrders.length} ${type} orders to manage.`);
 
-    let orderIndex = 0; // Index for existing orders
-    let levelIndex = 0; // Index for new price levels
-    
-    while (levelIndex < priceLevels.length) {
-        const price = priceLevels[levelIndex];
-        const quantity = quantities[levelIndex];
-        const tolerance = price * 0.01;
+    // // Cancel all existing orders of the same type
+    // for (const order of filteredOrders) {
+    //     console.log(`Cancelling ${type} order ${order.orderId}...`);
+    //     await tradingBotLib.cancelOrder(order.orderId).catch(err => console.error(`Failed to cancel ${type} order ${order.orderId}:`, err));
+    // }
 
-        while (orderIndex < filteredOrders.length && filteredOrders[orderIndex].price < price * (1 - tolerance)) {
-            // Cancel all orders that are below the current price level minus tolerance
-            await tradingBotLib.cancelOrder(filteredOrders[orderIndex].orderId).catch(console.error);
-            console.log(`Cancelled order ${filteredOrders[orderIndex].orderId} at price ${filteredOrders[orderIndex].price}, out of current price range.`);
-            orderIndex++;
-        }
-
-        if (orderIndex < filteredOrders.length && Math.abs(filteredOrders[orderIndex].price - price) / price < tolerance) {
-            // Existing order is within tolerance, check quantity
-            if (Math.abs(filteredOrders[orderIndex].quantity - quantity) / quantity < tolerance) {
-                // Order is valid, skip placing a new one
-                orderIndex++;
-            } else {
-                // Quantity differs, place new order
-                await tradingBotLib.placeOrder(type, price, quantity).then(() => {
-                    console.log(`${type.charAt(0).toUpperCase() + type.slice(1)} order placed: ${quantity} at ${price}`);
-                }).catch(console.error);
-            }
-        } else {
-            // No valid order exists, place a new one
-            await tradingBotLib.placeOrder(type, price, quantity).then(() => {
-                console.log(`${type.charAt(0).toUpperCase() + type.slice(1)} order placed: ${quantity} at ${price}`);
-            }).catch(console.error);
-        }
-
-        levelIndex++;
-    }
-
-    // Cancel any remaining out-of-bound orders
-    while (orderIndex < filteredOrders.length) {
-        await tradingBotLib.cancelOrder(filteredOrders[orderIndex].orderId).catch(console.error);
-        console.log(`Cancelled order ${filteredOrders[orderIndex].orderId} at price ${filteredOrders[orderIndex].price}, out of current price range.`);
-        orderIndex++;
+    // Place new orders based on type
+    for (let i = 0; i < priceLevels.length; i++) {
+        console.log(`Placing new ${type} order at price ${priceLevels[i]} with quantity ${quantities[i]}...`);
+        await tradingBotLib.placeOrder(type, priceLevels[i], quantities[i])
+            .catch(err => console.error(`Failed to place ${type} order at ${priceLevels[i]}:${quantities[i]}`, err));
     }
 }
 
 async function runBot() {
+    console.log('Initializing market...');
     await tradingBotLib.initMarket(marketSymbol);
+
+    runMM();
+}
+
+async function runMM() {
     const basePrice = await fetchCurrentPriceInPrecision();
-    console.log("Base price: " + basePrice);
+    console.log(`Base price in precision: ${basePrice}`);
 
-    const buyPriceLevels = calculatePriceLevels(basePrice, [0.1, 0.2, 2, 4, 5], 'buy');
-    const sellPriceLevels = calculatePriceLevels(basePrice, [0.1, 0.2, 2, 4, 5], 'sell');
+    const buyPriceLevels = calculatePriceLevels(basePrice, priceStepLevels, 'buy');
+    const sellPriceLevels = calculatePriceLevels(basePrice, priceStepLevels, 'sell');
 
-    const quoteBalance = await tradingBotLib.getBalance(quoteTokenAddress) * 10 ** tradingBotLib.quoteDecimals;
-    const baseBalance = await tradingBotLib.getBalance(baseTokenAddress) * 10 ** tradingBotLib.baseDecimals;
+    quoteBalance = await tradingBotLib.getBalance(tradingBotLib.quoteTokenAddress);
+    baseBalance = await tradingBotLib.getBalance(tradingBotLib.baseTokenAddress);
 
-    const buyQuantities = calculateQuantities(buyPriceLevels, quoteBalance, [20, 20, 20, 20, 20]);
-    const sellQuantities = calculateSellQuantities(sellPriceLevels, baseBalance, [20, 20, 20, 20, 20]);
+    baseBalance = baseBalance.toFixed(4); //To help with too many decimals error in Ethers library
+    console.log(    `Base balance: ${baseBalance}`);
+
+    quoteBalance *= 10 ** tradingBotLib.quoteDecimals;
+    baseBalance *= 10 ** tradingBotLib.quoteDecimals;
+
+    const buyQuantities = calculateQuantities(buyPriceLevels, quoteBalance, walletAllocation);
+    const sellQuantities = calculateSellQuantities(sellPriceLevels, baseBalance, walletAllocation);
+
+    await cancelOrders();
 
     await manageOrders(buyPriceLevels, buyQuantities, 'buy');
     await manageOrders(sellPriceLevels, sellQuantities, 'sell');
 
-    setTimeout(runBot, 5000); // Run the bot every 5 seconds
+    setTimeout(runMM, 5000); // Run the bot every 5 seconds
+
 }
 
 runBot().catch(console.error);

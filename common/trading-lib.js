@@ -20,7 +20,7 @@ const tradingBotLib = {
     async initMarket(_marketSymbol) {
         marketSymbol = _marketSymbol;
         try {
-            console.log("Trying to fetch market details for " + constants.GetMarketInfoUrl(marketSymbol));
+            console.log("Trying to fetch market details for " + marketSymbol);
             const marketInfoReq = await axios.get(constants.GetMarketInfoUrl(marketSymbol));
             const marketData = marketInfoReq.data.data[0];
             this.baseDecimals = marketData.base_decimal;
@@ -28,6 +28,7 @@ const tradingBotLib = {
             this.baseTokenAddress = marketData.base_contract_address;
             this.quoteTokenAddress = marketData.quote_contract_address;
             this.marketId = marketData.id;
+            console.log("Market data fetch success");
             return marketData;
         } catch (error) {
             console.error("Error in initMarket:", error);
@@ -143,7 +144,8 @@ const tradingBotLib = {
     async getAllOrders() {
         try {
             const myOrdersRequest = await axios.get(constants.GetUserOrdersURL(wallet.address));
-            return myOrdersRequest.data;
+            const filteredOrders = myOrdersRequest.data.filter(item => item.marketId === this.marketId);
+            return filteredOrders;
         } catch (error) {
             console.error("Error in getAllOrders:", error);
             throw error;
@@ -153,7 +155,8 @@ const tradingBotLib = {
     async getActiveOrders() {
         try {
             const activeOrdersRequest = await axios.get(constants.GetActiveOrdersUrl(wallet.address));
-            return activeOrdersRequest.data;
+            const filteredOrders = activeOrdersRequest.data.filter(item => item.marketId === this.marketId);
+            return filteredOrders;
         } catch (error) {
             console.error("Error in getActiveOrders:", error);
             throw error;
@@ -161,8 +164,7 @@ const tradingBotLib = {
     },
 
     filterActiveOrdersBySide(jsonArray, type) {
-        let filteredOrders = jsonArray.filter(item => item.marketId === this.marketId);
-        return filteredOrders.filter(item => item.side === type);
+        return jsonArray.filter(item => item.side === type);
     },
 
     sortOrdersByPrice(jsonArray) {
@@ -184,10 +186,17 @@ const tradingBotLib = {
         }
     },
 
+    //Uses Tegro for balance
     async getBalance(tokenAddress) {
         const balance = await axios.get(constants.GetBalanceForToken(wallet.address, tokenAddress));
         return Number(balance.data.data);
     },
+
+    // async getBalance(tokenAddress)
+    // {
+    //     const provider = const.
+    // }
+
 
     countOrderTypes(orders) {
         let buyCount = 0;
