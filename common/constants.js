@@ -12,6 +12,9 @@ const CANCEL_ALL_ORDERS_URL = `${BASE_URL}/api/v1/trading/market/orders/cancel-a
 
 const CANCEL_ORDER_URL = `${BASE_URL}/api/v1/trading/market/orders/cancel`;
 
+function GetPortfolioUrl(userAddress) {
+    return `${BASE_URL}/api/v1/accounts/${CHAIN_ID}/balances/${userAddress.toLowerCase()}`;
+}
 
 function GetBalanceForToken(userAddress, tokenAddress) {
     return `${BASE_URL}/api/v1/accounts/${CHAIN_ID}/balances/${userAddress.toLowerCase()}/${tokenAddress}`;
@@ -91,5 +94,6 @@ module.exports = {
     GetMarketInfoUrl,
     GetMarketDepthUrl,
     GetBalanceForToken,
+    GetPortfolioUrl,
     CHAIN_ID
 };

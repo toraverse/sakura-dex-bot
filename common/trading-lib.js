@@ -52,8 +52,8 @@ const tradingBotLib = {
             console.log("Invalid order price or volume");
         }
 
-        precisionPrice = Math.floor(precisionPrice);
-        precisionVolume = Math.floor(precisionVolume);
+        //precisionPrice = Math.floor(precisionPrice);
+        //precisionVolume = Math.floor(precisionVolume);
 
         console.log(`Trying to place an order for: ${precisionPrice} ${precisionVolume}`);
 
