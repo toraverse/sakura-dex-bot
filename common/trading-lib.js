@@ -192,12 +192,6 @@ const tradingBotLib = {
         return Number(balance.data.data);
     },
 
-    // async getBalance(tokenAddress)
-    // {
-    //     const provider = const.
-    // }
-
-
     countOrderTypes(orders) {
         let buyCount = 0;
         let sellCount = 0;
