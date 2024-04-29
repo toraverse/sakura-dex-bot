@@ -7,7 +7,7 @@ const marketSymbol = "WETH_USDC"; // Tegro market (target)
 
 const maxQuoteBalanceUtilization = 1000; 
 const maxBaseBalanceUtilization = 0.5; 
-const refreshOrders = 15000;
+const refreshOrders = 21000;
 
 const priceStepLevels = [0.5, 0.8, 1.2]; // Percentage steps for price levels (buy & sell)
 const walletAllocation = [20, 30, 40]; // Percentage allocation of the wallet for each order
