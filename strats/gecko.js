@@ -5,10 +5,11 @@ const chain = "base"; //source chain
 const sourceTokenAddress = "0x4200000000000000000000000000000000000006"; // Uniswap market GeckoTerminal (source)
 const marketSymbol = "WETH_USDC"; // Tegro market (target)
 
-const maxQuoteBalanceUtilization = 50; 
-const maxBaseBalanceUtilization = 100; 
+const maxQuoteBalanceUtilization = 1000; 
+const maxBaseBalanceUtilization = 0.5; 
+const refreshOrders = 15000;
 
-const priceStepLevels = [0.01, 0.1, 0.2]; // Percentage steps for price levels (buy & sell)
+const priceStepLevels = [0.5, 0.8, 1.2]; // Percentage steps for price levels (buy & sell)
 const walletAllocation = [20, 30, 40]; // Percentage allocation of the wallet for each order
 
 async function fetchCurrentPriceInPrecision() {
@@ -102,7 +103,7 @@ async function runMM() {
     await manageOrders(buyPriceLevels, buyQuantities, 'buy');
     await manageOrders(sellPriceLevels, sellQuantities, 'sell');
 
-    setTimeout(runMM, 5000); // Run the bot every 5 seconds
+    setTimeout(runMM, refreshOrders); // Run the bot every 15 seconds
 }
 
 runBot().catch(console.error);
