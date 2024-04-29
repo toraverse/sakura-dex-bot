@@ -82,7 +82,7 @@ class TegroConnector {
         //precisionPrice = Math.floor(precisionPrice);
         //precisionVolume = Math.floor(precisionVolume);
 
-        console.log(`Trying to place an order for: ${precisionPrice} ${precisionVolume}`);
+        //console.log(`Trying to place an order for: ${precisionPrice} ${precisionVolume} in ${this.marketSymbol}`);
 
         let rawData;
 
