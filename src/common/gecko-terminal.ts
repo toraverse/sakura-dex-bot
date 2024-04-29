@@ -13,11 +13,13 @@ const geckoTerminalLib = {
                 return parseFloat(response.data.data.attributes.price_usd);
             } else {
                 console.error('Price data is missing in the response');
+                return 0;
             }
         } catch (error) {
             console.log('Failed to fetch price: ' + error);
+            return
         }
     }
 };
 
-module.exports = geckoTerminalLib;
+export default geckoTerminalLib;
