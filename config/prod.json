@@ -1,0 +1,20 @@
+[
+    {
+        "chain": "base",
+        "marketSymbol": "WETH_USDC",
+        "maxQuoteBalanceUtilization": 1000,
+        "maxBaseBalanceUtilization": 1,
+        "priceStepLevels": [0.5],
+        "walletAllocation": [50],
+        "orderRefreshFrequency": 5000
+    },
+    {
+        "chain": "base",
+        "marketSymbol": "WETH_USDC",
+        "maxQuoteBalanceUtilization": 1000,
+        "maxBaseBalanceUtilization": 1,
+        "priceStepLevels": [0.5],
+        "walletAllocation": [40],
+        "orderRefreshFrequency": 5000
+    }
+]

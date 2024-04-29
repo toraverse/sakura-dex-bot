@@ -12,6 +12,8 @@ const CANCEL_ALL_ORDERS_URL = `${BASE_URL}/api/v1/trading/market/orders/cancel-a
 
 const CANCEL_ORDER_URL = `${BASE_URL}/api/v1/trading/market/orders/cancel`;
 
+const CHAIN_LIST_URL = `${BASE_URL}/api/v1/exchange/chain/list`;
+
 function GetPortfolioUrl(userAddress) {
     return `${BASE_URL}/api/v1/accounts/${CHAIN_ID}/balances/${userAddress.toLowerCase()}`;
 }
@@ -95,5 +97,7 @@ module.exports = {
     GetMarketDepthUrl,
     GetBalanceForToken,
     GetPortfolioUrl,
-    CHAIN_ID
+    CHAIN_ID,
+    CHAIN_LIST_URL,
+    GECKO_TERMINAL_BASE_URL
 };
