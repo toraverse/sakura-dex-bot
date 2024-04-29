@@ -3,7 +3,7 @@ import { TegroConnector } from "../common/trading-lib";
 
 export class GeckoMarketMaking {
 
-    constructor(chain, marketSymbol, maxQuoteBalanceUtilization, maxBaseBalanceUtilization, priceStepLevels, walletAllocation) {
+    constructor(chain: string, marketSymbol: string, maxQuoteBalanceUtilization: number, maxBaseBalanceUtilization: number, priceStepLevels: number[], walletAllocation: number[]) {
         this.chain = chain;
         this.marketSymbol = marketSymbol;
         this.maxQuoteBalanceUtilization = maxQuoteBalanceUtilization;
@@ -13,34 +13,33 @@ export class GeckoMarketMaking {
         this.tegroConnector = new TegroConnector(this.marketSymbol);
     }
 
-    chain; //source chain    
-    sourceTokenAddress = "0x4200000000000000000000000000000000000006"; // Uniswap market GeckoTerminal (source)
-    marketSymbol = "WETH_USDC"; // Tegro market (target)
-    tegroConnector;
+    chain: string; //source chain    
+    marketSymbol: string; // Tegro market (target)
+    tegroConnector: TegroConnector;
 
-    maxQuoteBalanceUtilization;
-    maxBaseBalanceUtilization;
+    maxQuoteBalanceUtilization: number;
+    maxBaseBalanceUtilization: number;
 
-    priceStepLevels; // Percentage steps for price levels (buy & sell)
-    walletAllocation; // Percentage allocation of the wallet for each order
+    priceStepLevels: number[]; // Percentage steps for price levels (buy & sell)
+    walletAllocation: number[]; // Percentage allocation of the wallet for each order
 
     async fetchCurrentPriceInPrecision() {
         let floatPrice = await geckoTerminalLib.getPrice(this.chain, this.tegroConnector.baseTokenAddress);
         console.log(`Fetched current price: ${floatPrice}`);
         if (floatPrice === undefined || floatPrice === 0) {
             console.error("Failed to fetch price from CoinGecko.");
-            return;
+            return 0;
         }
         return floatPrice * 10 ** this.tegroConnector.quoteDecimals;
     }
 
-    calculatePriceLevels(basePrice, percentages, type) {
+    calculatePriceLevels(basePrice: number, percentages: number[], type: string) {
         const priceLevels = percentages.map(percentage => BigInt(Math.floor(basePrice * (1 + (type === 'sell' ? 1 : -1) * percentage / 100))));
         console.log(`Calculated ${type} price levels: ${priceLevels}`);
         return priceLevels;
     }
 
-    calculateQuantities(priceLevels, balance, percentages) {
+    calculateQuantities(priceLevels: number[], balance: number, percentages: number[]) {
         const quantities = priceLevels.map((priceLevel, index) => {
             const totalPrice = balance * (percentages[index] / 100);
             console.log(totalPrice);
@@ -51,7 +50,7 @@ export class GeckoMarketMaking {
         return quantities;
     }
 
-    calculateSellQuantities(priceLevels, balance, percentages) {
+    calculateSellQuantities(priceLevels: number[], balance: number, percentages: number[]) {
         const quantities = priceLevels.map((priceLevel, index) => {
             const quantity = BigInt(Math.floor(balance * (percentages[index] / 100)));
             return quantity;
@@ -70,7 +69,7 @@ export class GeckoMarketMaking {
         }
     }
 
-    async manageOrders(priceLevels, quantities, type) {
+    async manageOrders(priceLevels: number[], quantities: number[], type: number) {
         // Place new orders based on type
         for (let i = 0; i < priceLevels.length; i++) {
             console.log(`Placing new ${type} order at price ${priceLevels[i]} with quantity ${quantities[i]}...`);
@@ -81,7 +80,7 @@ export class GeckoMarketMaking {
 
     async initBot() {
         console.log('Initializing market...');
-        await this.tegroConnector.initMarket(this.marketSymbol);
+        await this.tegroConnector.initMarket();
     }
 
     async getBaseBalance() {
