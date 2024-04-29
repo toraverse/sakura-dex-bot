@@ -117,7 +117,7 @@ class GeckoMarketMaking {
         await this.manageOrders(buyPriceLevels, buyQuantities, 'buy');
         await this.manageOrders(sellPriceLevels, sellQuantities, 'sell');
 
-        setTimeout(this.runMM, this.refreshRate); // Run the bot every 5 seconds
+        setTimeout(() => this.runMM(), this.refreshRate); // Correctly bind `this` to the instance
     }
 }
 

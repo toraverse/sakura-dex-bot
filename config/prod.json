@@ -3,9 +3,18 @@
         "chain": "base",
         "marketSymbol": "WETH_USDC",
         "maxQuoteBalanceUtilization": 1000,
-        "maxBaseBalanceUtilization": 0.5,
-        "priceStepLevels": [0.5, 0.8, 1.2],
-        "walletAllocation": [20, 30, 40],
-        "refreshRate": 2000
+        "maxBaseBalanceUtilization": 1,
+        "priceStepLevels": [0.5],
+        "walletAllocation": [50],
+        "refreshRate": 5000
+    },
+    {
+        "chain": "base",
+        "marketSymbol": "WETH_USDC",
+        "maxQuoteBalanceUtilization": 1000,
+        "maxBaseBalanceUtilization": 1,
+        "priceStepLevels": [0.5],
+        "walletAllocation": [40],
+        "refreshRate": 5000
     }
 ]
