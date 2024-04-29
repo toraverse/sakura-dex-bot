@@ -1,4 +1,4 @@
-const GeckoMarketMaking = require("./gecko");
+const GeckoMarketMaking = require("./geckoMarketMaking");
 const fs = require('fs');
 
 // Read the strategy configurations from the JSON file
