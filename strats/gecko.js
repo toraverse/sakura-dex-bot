@@ -4,33 +4,32 @@ const geckoTerminalLib = require("../common/geckoTerminal");
 class GeckoMarketMaking {
 
     chain;
-    sourceTokenAddress;  // Uniswap market GeckoTerminal (source)
     marketSymbol; // Tegro market (target)
     tegroConnector;
-
     maxQuoteBalanceUtilization;
     maxBaseBalanceUtilization;
-
     priceStepLevels; // Percentage steps for price levels (buy & sell)
     walletAllocation; // Percentage allocation of the wallet for each order
+    refreshRate;
 
-    constructor(chain, marketSymbol, maxQuoteBalanceUtilization, maxBaseBalanceUtilization, priceStepLevels, walletAllocation) {
+    constructor(chain, marketSymbol, maxQuoteBalanceUtilization, maxBaseBalanceUtilization, priceStepLevels, walletAllocation, refreshRate) {
         this.chain = chain;
         this.marketSymbol = marketSymbol;
         this.maxQuoteBalanceUtilization = maxQuoteBalanceUtilization;
         this.maxBaseBalanceUtilization = maxBaseBalanceUtilization;
         this.priceStepLevels = priceStepLevels;
         this.walletAllocation = walletAllocation;
+        this.refreshRate = refreshRate;
         this.tegroConnector = new TegroConnector(this.marketSymbol);
     }
 
     async fetchCurrentPriceInPrecision() {
         let floatPrice = await geckoTerminalLib.getPrice(this.chain, this.tegroConnector.baseTokenAddress);
-        console.log(`Fetched current price: ${floatPrice}`);
         if (floatPrice === undefined || floatPrice === 0) {
             console.error("Failed to fetch price from CoinGecko.");
             return;
         }
+        console.log(`Fetched current price: ${floatPrice}`);
         return floatPrice * 10 ** this.tegroConnector.quoteDecimals;
     }
 
@@ -118,7 +117,7 @@ class GeckoMarketMaking {
         await this.manageOrders(buyPriceLevels, buyQuantities, 'buy');
         await this.manageOrders(sellPriceLevels, sellQuantities, 'sell');
 
-        setTimeout(this.runMM, 5000); // Run the bot every 5 seconds
+        setTimeout(this.runMM, this.refreshRate); // Run the bot every 5 seconds
     }
 }
 

@@ -1,0 +1,11 @@
+[
+    {
+        "chain": "base",
+        "marketSymbol": "WETH_USDC",
+        "maxQuoteBalanceUtilization": 1000,
+        "maxBaseBalanceUtilization": 0.5,
+        "priceStepLevels": [0.5, 0.8, 1.2],
+        "walletAllocation": [20, 30, 40],
+        "refreshRate": 2000
+    }
+]
