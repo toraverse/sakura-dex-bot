@@ -6,7 +6,7 @@
         "maxBaseBalanceUtilization": 1,
         "priceStepLevels": [0.5],
         "walletAllocation": [50],
-        "refreshRate": 5000
+        "orderRefreshFrequency": 5000
     },
     {
         "chain": "base",
@@ -15,6 +15,6 @@
         "maxBaseBalanceUtilization": 1,
         "priceStepLevels": [0.5],
         "walletAllocation": [40],
-        "refreshRate": 5000
+        "orderRefreshFrequency": 5000
     }
 ]

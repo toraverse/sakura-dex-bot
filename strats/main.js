@@ -12,7 +12,7 @@ async function marketMake(config) {
         config.maxBaseBalanceUtilization,
         config.priceStepLevels,
         config.walletAllocation,
-        config.refreshRate
+        config.orderRefreshFrequency
     );
     await geckoMM.initBot();
     await geckoMM.runMM();

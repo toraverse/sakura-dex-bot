@@ -10,16 +10,16 @@ class GeckoMarketMaking {
     maxBaseBalanceUtilization;
     priceStepLevels; // Percentage steps for price levels (buy & sell)
     walletAllocation; // Percentage allocation of the wallet for each order
-    refreshRate;
+    orderRefreshFrequency;
 
-    constructor(chain, marketSymbol, maxQuoteBalanceUtilization, maxBaseBalanceUtilization, priceStepLevels, walletAllocation, refreshRate) {
+    constructor(chain, marketSymbol, maxQuoteBalanceUtilization, maxBaseBalanceUtilization, priceStepLevels, walletAllocation, orderRefreshFrequency) {
         this.chain = chain;
         this.marketSymbol = marketSymbol;
         this.maxQuoteBalanceUtilization = maxQuoteBalanceUtilization;
         this.maxBaseBalanceUtilization = maxBaseBalanceUtilization;
         this.priceStepLevels = priceStepLevels;
         this.walletAllocation = walletAllocation;
-        this.refreshRate = refreshRate;
+        this.orderRefreshFrequency = orderRefreshFrequency;
         this.tegroConnector = new TegroConnector(this.marketSymbol);
     }
 
@@ -117,7 +117,7 @@ class GeckoMarketMaking {
         await this.manageOrders(buyPriceLevels, buyQuantities, 'buy');
         await this.manageOrders(sellPriceLevels, sellQuantities, 'sell');
 
-        setTimeout(() => this.runMM(), this.refreshRate); // Correctly bind `this` to the instance
+        setTimeout(() => this.runMM(), this.orderRefreshFrequency); // Correctly bind `this` to the instance
     }
 }
 
