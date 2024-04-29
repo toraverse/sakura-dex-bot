@@ -12,16 +12,28 @@ class TegroConnector {
     quoteDecimals;
     marketId;
     wallet;
+    verifyingContract;
 
     constructor(marketSymbol) {
         this.marketSymbol = marketSymbol;
-        const providerUrl = process.env.PROVIDER_URL;
         const privateKey = process.env.PRIVATE_KEY;
-        const provider = new ethers.JsonRpcProvider(providerUrl);
+        const provider = ethers.getDefaultProvider();
         this.wallet = new ethers.Wallet(privateKey, provider);
     }
 
     async initMarket() {
+        //Get the verifying contract address
+        try {
+            const chainList = await axios.get(constants.CHAIN_LIST_URL);
+            const chainData = chainList.data.data;
+            const chainInfo = chainData.filter(item => item.id === constants.CHAIN_ID);
+            this.verifyingContract = chainInfo[0].exchange_contract;
+        }
+        catch (error) {
+            console.error("Error in initMarket:", error);
+            throw error;
+        }
+
         try {
             console.log("Trying to fetch market details for " + this.marketSymbol);
             const marketInfoReq = await axios.get(constants.GetMarketInfoUrl(this.marketSymbol));
@@ -40,9 +52,21 @@ class TegroConnector {
         console.log("Successfully fetched market details for " + this.marketSymbol);
     }
 
+    getDomain()
+    {
+        const domain = {
+            name: "TegroDEX",
+            version: "1",
+            chainId: constants.CHAIN_ID,
+            verifyingContract: this.verifyingContract,
+        };
+
+        return domain;
+    }
+
     async signOrder(rawData) {
         try {
-            return await this.wallet.signTypedData(constants.DOMAIN, constants.TYPE, rawData);
+            return await this.wallet.signTypedData(this.getDomain(), constants.TYPE, rawData);
         } catch (error) {
             console.error("Error in signOrder:", error);
             throw error;
@@ -82,7 +106,7 @@ class TegroConnector {
         };
         const signature = await this.signOrder(rawData);
 
-        const orderHash = TypedDataEncoder.hash(constants.DOMAIN, constants.TYPE, rawData).toString();
+        const orderHash = TypedDataEncoder.hash(this.getDomain(), constants.TYPE, rawData).toString();
         const limit_order = {
             chain_id: constants.CHAIN_ID,
             base_asset: side == 1 ? this.quoteTokenAddress : this.baseTokenAddress,

@@ -2,7 +2,7 @@ const axios = require('axios');
 const constants = require('./constants');
 require('dotenv').config();
 
-const baseUrl = process.env.GECKO_TERMINAL_BASE_URL;
+const baseUrl = constants.GECKO_TERMINAL_BASE_URL;
 
 const geckoTerminalLib = {
     async getPrice(chain, tokenAddress) {
