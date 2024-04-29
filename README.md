@@ -1,5 +1,3 @@
-Here is the updated README file:
-```
 **Trading Bot on Tegro Dex**
 =====================
 
@@ -37,5 +35,4 @@ The bot configuration can be found in `strats/Gecko.js`. You can adjust the foll
 * **Max Base Balance Utilization**: The maximum sum of all ask orders in base currency (currently set to `0.5`).
 * **Refresh Orders**: The interval at which the bot refreshes its orders (currently set to `21000` milliseconds).
 
-**Note**: This is a basic README file, you may want to add more information such as how to configure the bot, troubleshooting tips, and any other relevant details.
-```
+**Note**: This is a basic trading bot, feel free to add your stratergy to trade.
