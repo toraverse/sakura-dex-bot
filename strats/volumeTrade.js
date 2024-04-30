@@ -25,7 +25,6 @@ class VolumeTrade extends BaseStrategy {
 
     async run() {
         await this.counterTrade();
-        setTimeout(() => this.counterTrade(), this.orderRefreshFrequency);
     }
 
     async getBaseBalance() {
@@ -46,6 +45,7 @@ class VolumeTrade extends BaseStrategy {
     }
 
     async counterTrade() {
+        console.log("Starting counter trade");
         try {
             //First cancel all existing orders
             await this.cancelOrders();
@@ -87,6 +87,7 @@ class VolumeTrade extends BaseStrategy {
         catch (error) {
             console.log("Error in counterTrade:", error);
         }
+        setTimeout(() => this.counterTrade(), this.orderRefreshFrequency);
     }
 }
 
