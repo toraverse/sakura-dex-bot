@@ -82,7 +82,7 @@ class TegroConnector {
         //precisionPrice = Math.floor(precisionPrice);
         //precisionVolume = Math.floor(precisionVolume);
 
-        //console.log(`Trying to place an order for: ${precisionPrice} ${precisionVolume} in ${this.marketSymbol}`);
+        console.log(`Trying to place a ${side} order for: ${precisionPrice} ${precisionVolume} in ${this.marketSymbol}`);
 
         let rawData;
 
@@ -130,6 +130,7 @@ class TegroConnector {
             console.log(JSON.stringify(limit_order));
             //console.error("Error in placeOrder");
             throw error;
+            //console.log("Failed to place an order!");
         }
     }
 
@@ -214,7 +215,7 @@ class TegroConnector {
     }
 
     //Uses Tegro for balance
-    async getBalance(tokenAddress) {
+    async getBalanceInFloat(tokenAddress) {
         const balance = await axios.get(constants.GetBalanceForToken(this.wallet.address, tokenAddress));
         return Number(balance.data.data);
     }

@@ -95,8 +95,8 @@ async function runBot() {
     const buyPriceLevels = calculatePriceLevels(basePrice, [0.01, 0.02, 5], 'buy');
     const sellPriceLevels = calculatePriceLevels(basePrice, [0.01, 0.02, 5], 'sell');
 
-    const quoteBalance = await tradingBotLib.getBalance(tradingBotLib.quoteTokenAddress) * 10 ** tradingBotLib.quoteDecimals;
-    const baseBalance = await tradingBotLib.getBalance(tradingBotLib.baseTokenAddress) * 10 ** tradingBotLib.baseDecimals;
+    const quoteBalance = await tradingBotLib.getBalanceInFloat(tradingBotLib.quoteTokenAddress) * 10 ** tradingBotLib.quoteDecimals;
+    const baseBalance = await tradingBotLib.getBalanceInFloat(tradingBotLib.baseTokenAddress) * 10 ** tradingBotLib.baseDecimals;
 
     const buyQuantities = calculateQuantities(buyPriceLevels, quoteBalance, [20, 20, 60]);
     const sellQuantities = calculateSellQuantities(sellPriceLevels, baseBalance, [20, 20, 60]);

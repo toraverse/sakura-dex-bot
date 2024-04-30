@@ -1,7 +1,8 @@
 const TegroConnector = require('../common/tegroConnector');
 const geckoTerminalLib = require("../common/geckoTerminal");
+const BaseStrategy = require("../common/baseStrategy");
 
-class GeckoMarketMaking {
+class GeckoMarketMaking extends BaseStrategy {
 
     chain;
     marketSymbol; // Tegro market (target)
@@ -12,16 +13,22 @@ class GeckoMarketMaking {
     walletAllocation; // Percentage allocation of the wallet for each order
     orderRefreshFrequency;
 
-    constructor(chain, marketSymbol, maxQuoteBalanceUtilization, maxBaseBalanceUtilization, priceStepLevels, walletAllocation, orderRefreshFrequency) {
-        this.chain = chain;
-        this.marketSymbol = marketSymbol;
-        this.maxQuoteBalanceUtilization = maxQuoteBalanceUtilization;
-        this.maxBaseBalanceUtilization = maxBaseBalanceUtilization;
-        this.priceStepLevels = priceStepLevels;
-        this.walletAllocation = walletAllocation;
-        this.orderRefreshFrequency = orderRefreshFrequency;
+    constructor(config) {
+        super();
+        this.chain = config.chain;
+        this.marketSymbol = config.marketSymbol;
+        this.maxQuoteBalanceUtilization = config.maxQuoteBalanceUtilization;
+        this.maxBaseBalanceUtilization = config.maxBaseBalanceUtilization;
+        this.priceStepLevels = config.priceStepLevels;
+        this.walletAllocation = config.walletAllocation;
+        this.orderRefreshFrequency = config.orderRefreshFrequency;
         this.tegroConnector = new TegroConnector(this.marketSymbol);
     }
+
+    async init() {
+        await this.tegroConnector.initMarket(this.marketSymbol);
+    }
+
 
     async fetchCurrentPriceInPrecision() {
         let floatPrice = await geckoTerminalLib.getPrice(this.chain, this.tegroConnector.baseTokenAddress);
@@ -102,18 +109,18 @@ class GeckoMarketMaking {
         }
     }
 
-    async initBot() {
-        await this.tegroConnector.initMarket(this.marketSymbol);
-    }
-
     async getBaseBalance() {
-        const balance = await this.tegroConnector.getBalance(this.tegroConnector.baseTokenAddress);
+        const balance = await this.tegroConnector.getBalanceInFloat(this.tegroConnector.baseTokenAddress);
         return balance > this.maxBaseBalanceUtilization ? this.maxBaseBalanceUtilization : balance;
     }
 
     async getQuoteBalance() {
-        const balance = await this.tegroConnector.getBalance(this.tegroConnector.quoteTokenAddress);
+        const balance = await this.tegroConnector.getBalanceInFloat(this.tegroConnector.quoteTokenAddress);
         return balance > this.maxQuoteBalanceUtilization ? this.maxQuoteBalanceUtilization : balance;
+    }
+
+    async run() {
+        await this.runMM();
     }
 
     async runMM() {
