@@ -14,7 +14,7 @@ class VolumeTrade extends BaseStrategy {
         super();
         this.marketSymbol = config.marketSymbol;
         this.orderRefreshFrequency = config.orderRefreshFrequency;
-        this.tegroConnector = new TegroConnector(this.marketSymbol);
+        this.tegroConnector = new TegroConnector(this.marketSymbol, config.Wallet);
         this.maxQuoteBalanceUtilization = config.maxQuoteBalanceUtilization;
         this.maxBaseBalanceUtilization = config.maxBaseBalanceUtilization;
     }

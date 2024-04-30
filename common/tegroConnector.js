@@ -14,9 +14,9 @@ class TegroConnector {
     wallet;
     verifyingContract;
 
-    constructor(marketSymbol) {
+    constructor(marketSymbol, privateKeyVariableName = "PRIVATE_KEY") {
         this.marketSymbol = marketSymbol;
-        const privateKey = process.env.PRIVATE_KEY;
+        const privateKey = process.env[privateKeyVariableName];
         const provider = ethers.getDefaultProvider();
         this.wallet = new ethers.Wallet(privateKey, provider);
     }

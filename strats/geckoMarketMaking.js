@@ -22,7 +22,7 @@ class GeckoMarketMaking extends BaseStrategy {
         this.priceStepLevels = config.priceStepLevels;
         this.walletAllocation = config.walletAllocation;
         this.orderRefreshFrequency = config.orderRefreshFrequency;
-        this.tegroConnector = new TegroConnector(this.marketSymbol);
+        this.tegroConnector = new TegroConnector(this.marketSymbol, config.Wallet);
     }
 
     async init() {

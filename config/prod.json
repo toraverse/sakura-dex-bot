@@ -11,13 +11,15 @@
         "walletAllocation": [
             100
         ],
-        "orderRefreshFrequency": 5000
+        "orderRefreshFrequency": 5000,
+        "Wallet": "PRIVATE_KEY"
     },
     {
         "type": "VolumeTrade",
         "marketSymbol": "BRETT_USDC",
         "maxQuoteBalanceUtilization": 14,
         "maxBaseBalanceUtilization": 200,
-        "orderRefreshFrequency": 10000
+        "orderRefreshFrequency": 10000,
+        "Wallet": "PRIVATE_KEY"
     }
 ]
