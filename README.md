@@ -26,12 +26,15 @@ Make sure to replace `YOUR_PRIVATE_KEY_HERE` with your actual private key.
 -----------------
 The bot configuration can be found in `config/prod.json`. You can adjust the following settings to customize the bot's behavior:
 
+First, there are 6 differnet setups by default in this file. These belong to two different strategies. 
+Lets review what these mean for the second option in the file, which is for the market 'WETH_USDC' for the 'GeckoMM' or market making strategy. For deploying this, you must make sure all the other options are set to false.
+
 * **Chain**: The source chain (currently set to `"base"`).
 * **Source Token Address**: The address of the token on Uniswap market GeckoTerminal (currently set to `"0x420000000000000000000000000000000000000000006"`).
-* **Market Symbol**: The symbol of the Tegro market (currently set to `"WETH_USDC"`).
-* **Max Quote Balance Utilization**: The maximum sum of all bid orders in quote currency (currently set to `300`).
-* **Max Base Balance Utilization**: The maximum sum of all ask orders in base currency (currently set to `0.1`).
-* **Refresh Orders**: The interval at which the bot refreshes its orders (currently set to `21000` milliseconds).
+* **Market Symbol**: The symbol of the Tegro market (currently all options are available in the various options ex:`"WETH_USDC"`).
+* **Max Quote Balance Utilization**: The maximum sum of all bid orders in quote currency (currently set to `1000`).
+* **Max Base Balance Utilization**: The maximum sum of all ask orders in base currency (currently set to `0.5`).
+* **Refresh Orders**: The interval at which the bot refreshes its orders (currently set to `12050` milliseconds).
 * **Price Step Levels**: An array that tells the bot at what intervals from the mid price to place the orders (Currently set to [0.3,0.6,0.9], which will set the first order at a price 0.3% away from mid-price, second at 0.6% and third at 0.9%)
 * **Wallet Allocation**: An array that tells the bot what should be the allocation for the corresponding price steps (Currently set to [30,30,40], which will give the first order at 30% allocation from the wallet balance, second also at 30% and third at 40%)
 
