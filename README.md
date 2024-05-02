@@ -36,6 +36,7 @@ The bot configuration can be found in `config/prod.json`. You can adjust the fol
 * **Wallet Allocation**: An array that tells the bot what should be the allocation for the corresponding price steps (Currently set to [30,30,40], which will give the first order at 30% allocation from the wallet balance, second also at 30% and third at 40%)
 
 _Note 1: The number of items in the Price Step Levels array and the Wallet allocation array must be equal. The total sum of items in the wallet allocation array must be less than 100._
+
 _Note 2: You must have either same or more approvals and balances in your wallet then what you have set for Max Quote Balance and Base Balance Utilization._
 
 
