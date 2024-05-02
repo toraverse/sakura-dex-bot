@@ -21,12 +21,6 @@ GECKO_TERMINAL_BASE_URL="https://api.geckoterminal.com/api/v2"
 
 Make sure to replace `YOUR_PRIVATE_KEY_HERE` with your actual private key.
 
-**Running the Bot**
----------------
-To run the bot, execute the following command in your terminal:
-
-`node strats/main.js`
-
 
 **Bot Configuration**
 -----------------
@@ -39,4 +33,13 @@ The bot configuration can be found in `config/prod.json`. You can adjust the fol
 * **Max Base Balance Utilization**: The maximum sum of all ask orders in base currency (currently set to `0.1`).
 * **Refresh Orders**: The interval at which the bot refreshes its orders (currently set to `21000` milliseconds).
 
+
+**Running the Bot**
+---------------
+To run the bot, execute the following command in your terminal:
+
+`node strats/main.js`
+
+
 **Note**: This is a basic trading bot, feel free to add your stratergy to trade.
+
