@@ -21,14 +21,19 @@ async function main() {
 
 async function loadStrats() {
     strategyConfigs.forEach(config => {
+        if (!config.active) {
+            console.log('\x1b[36m%s\x1b[0m',`Skipping inactive strategy: ${config.type} ${config.marketSymbol}`);
+            return;  // Skip this iteration, do not load the strategy
+        }
         try {
             const strategy = createStrategy(config);
             strategies.push(strategy);
         } catch (error) {
-            console.error("Error initializing strategy:", error);
+            console.error('Error initializing strategy for + ${config.type} ${config.marketSymbol}:', error);
         }
     });
 }
+
 
 function createStrategy(config) {
     switch (config.type) {

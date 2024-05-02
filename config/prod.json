@@ -1,25 +1,72 @@
 [
+    {   
+        "active": true,
+        "Wallet": "WALLET_PRIVATE_KEY_01",
+        "type": "GeckoMM",
+        "chain": "base",
+        "marketSymbol": "DEGEN_USDC",
+        "maxQuoteBalanceUtilization": 1000,
+        "maxBaseBalanceUtilization": 40000,
+        "priceStepLevels": [0.5,0.75,1,1.2],
+        "walletAllocation": [10,20,25,45],
+        "orderRefreshFrequency": 12000
+        
+    },
     {
+        
+        "active": true,
+        "Wallet": "WALLET_PRIVATE_KEY_01",
+        "type": "GeckoMM",
+        "chain": "base",
+        "marketSymbol": "WETH_USDC",
+        "maxQuoteBalanceUtilization": 1000,
+        "maxBaseBalanceUtilization": 0.5,
+        "priceStepLevels": [0.5,0.75,1,1.2],
+        "walletAllocation": [10,20,25,45],
+        "orderRefreshFrequency": 12050
+    },
+    {
+        
+        "active": true,
+        "Wallet": "WALLET_PRIVATE_KEY_01",
         "type": "GeckoMM",
         "chain": "base",
         "marketSymbol": "BRETT_USDC",
-        "maxQuoteBalanceUtilization": 10,
-        "maxBaseBalanceUtilization": 200,
-        "priceStepLevels": [
-            6
-        ],
-        "walletAllocation": [
-            100
-        ],
-        "orderRefreshFrequency": 5000,
-        "Wallet": "PRIVATE_KEY"
+        "maxQuoteBalanceUtilization": 1000,
+        "maxBaseBalanceUtilization": 20000,
+        "priceStepLevels": [0.6,0.75,1,1.2],
+        "walletAllocation": [10,20,25,45],
+        "orderRefreshFrequency": 12050
     },
     {
+        
+        "active": true,
+        "Wallet": "WALLET_PRIVATE_KEY_02",
         "type": "VolumeTrade",
         "marketSymbol": "BRETT_USDC",
-        "maxQuoteBalanceUtilization": 14,
-        "maxBaseBalanceUtilization": 200,
-        "orderRefreshFrequency": 10000,
-        "Wallet": "PRIVATE_KEY"
+        "maxQuoteBalanceUtilization": 200,
+        "maxBaseBalanceUtilization": 5400,
+        "orderRefreshFrequency": 1206000
+        
+    },
+    {
+        "active": true,
+        "Wallet": "WALLET_PRIVATE_KEY_02",
+        "type": "VolumeTrade",
+        "marketSymbol": "DEGEN_USDC",
+        "maxQuoteBalanceUtilization": 200,
+        "maxBaseBalanceUtilization": 9000,
+        "orderRefreshFrequency": 1206000
+        
+    },
+    {
+        "active": true,
+        "Wallet": "WALLET_PRIVATE_KEY_02",
+        "type": "VolumeTrade",       
+        "marketSymbol": "WETH_USDC",
+        "maxQuoteBalanceUtilization": 1600,
+        "maxBaseBalanceUtilization": 0.6,
+        "orderRefreshFrequency": 1206000
+        
     }
 ]
