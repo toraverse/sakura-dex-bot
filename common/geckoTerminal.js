@@ -1,5 +1,6 @@
 const axios = require('axios');
 const constants = require('./constants');
+const { handleNetworkError } = require('./utils'); // Import the handleNetworkError function
 require('dotenv').config();
 
 const baseUrl = constants.GECKO_TERMINAL_BASE_URL;
@@ -15,7 +16,7 @@ const geckoTerminalLib = {
                 console.error('Price data is missing in the response');
             }
         } catch (error) {
-            console.log('Failed to fetch price: ' + error);
+            handleNetworkError('Failed to fetch price: ' + error); // Use the handleNetworkError function to log errors
         }
     }
 };

@@ -2,6 +2,7 @@ const { ethers, TypedDataEncoder, JsonRpcApiProvider, Typed } = require("ethers"
 const axios = require('axios');
 require('dotenv').config();
 const constants = require('./constants');
+const { handleNetworkError } = require('./utils'); // Import the handleNetworkError function
 
 class TegroConnector {
 
@@ -30,7 +31,7 @@ class TegroConnector {
             this.verifyingContract = chainInfo[0].exchange_contract;
         }
         catch (error) {
-            console.error("Error in initMarket:", error);
+            handleNetworkError("Error in initMarket: " + error); // Use the handleNetworkError function to log errors
             throw error;
         }
 
@@ -46,7 +47,7 @@ class TegroConnector {
             console.log("Market data fetch success");
             return marketData;
         } catch (error) {
-            console.error("Error in initMarket:", error);
+            handleNetworkError("Error in initMarket: " + error); // Use the handleNetworkError function to log errors
             throw error;
         }
         console.log("Successfully fetched market details for " + this.marketSymbol);
@@ -68,7 +69,7 @@ class TegroConnector {
         try {
             return await this.wallet.signTypedData(this.getDomain(), constants.TYPE, rawData);
         } catch (error) {
-            console.error("Error in signOrder:", error);
+            handleNetworkError("Error in signOrder: " + error); // Use the handleNetworkError function to log errors
             throw error;
         }
     }
@@ -129,7 +130,7 @@ class TegroConnector {
         } catch (error) {
             console.log(JSON.stringify(limit_order));
             //console.error("Error in placeOrder");
-            throw error;
+            handleNetworkError(error); // Use the handleNetworkError function to log errors
             //console.log("Failed to place an order!");
         }
     }
@@ -150,7 +151,7 @@ class TegroConnector {
             await axios.post(constants.CANCEL_ORDER_URL, cancelOrderObject);
         }
         catch (error) {
-            console.error("Error in cancelOrder:", error);
+            handleNetworkError("Error in cancelOrder: " + error); // Use the handleNetworkError function to log errors
             throw error;
         }
     }
@@ -164,7 +165,7 @@ class TegroConnector {
         try {
             await axios.post(constants.CANCEL_ALL_ORDERS_URL, cancelAllObject);
         } catch (error) {
-            console.error("Error in cancelAllOrders:", error);
+            handleNetworkError("Error in cancelAllOrders: " + error); // Use the handleNetworkError function to log errors
             throw error;
         }
     }
@@ -175,7 +176,7 @@ class TegroConnector {
             const filteredOrders = myOrdersRequest.data.filter(item => item.marketId === this.marketId);
             return filteredOrders;
         } catch (error) {
-            console.error("Error in getAllOrders:", error);
+            handleNetworkError("Error in getAllOrders: " + error); // Use the handleNetworkError function to log errors
             throw error;
         }
     }
@@ -186,7 +187,7 @@ class TegroConnector {
             const filteredOrders = activeOrdersRequest.data.filter(item => item.marketId === this.marketId);
             return filteredOrders;
         } catch (error) {
-            console.error("Error in getActiveOrders:", error);
+            handleNetworkError("Error in getActiveOrders: " + error); // Use the handleNetworkError function to log errors
             throw error;
         }
     }
@@ -210,7 +211,7 @@ class TegroConnector {
             const depthRequest = await axios.get(constants.GetMarketDepthUrl(this.marketSymbol));
             return depthRequest.data;
         } catch (error) {
-            console.error("Error in getDepth:", error);
+            handleNetworkError("Error in getDepth: " + error); // Use the handleNetworkError function to log errors
         }
     }
 
