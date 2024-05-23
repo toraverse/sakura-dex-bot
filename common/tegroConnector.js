@@ -31,7 +31,6 @@ class TegroConnector {
         }
         catch (error) {
             console.error("Error in initMarket:", error);
-            throw error;
         }
 
         try {
@@ -47,7 +46,6 @@ class TegroConnector {
             return marketData;
         } catch (error) {
             console.error("Error in initMarket:", error);
-            throw error;
         }
         console.log("Successfully fetched market details for " + this.marketSymbol);
     }
@@ -69,7 +67,6 @@ class TegroConnector {
             return await this.wallet.signTypedData(this.getDomain(), constants.TYPE, rawData);
         } catch (error) {
             console.error("Error in signOrder:", error);
-            throw error;
         }
     }
 
@@ -127,9 +124,8 @@ class TegroConnector {
             const createOrderRequest = await axios.post(constants.CREATE_ORDER_URL, limit_order);
             return createOrderRequest.data;
         } catch (error) {
-            console.log(JSON.stringify(limit_order));
+            console.log("Error in creating order : ",JSON.stringify(limit_order));
             //console.error("Error in placeOrder");
-            throw error;
             //console.log("Failed to place an order!");
         }
     }
@@ -151,7 +147,6 @@ class TegroConnector {
         }
         catch (error) {
             console.error("Error in cancelOrder:", error);
-            throw error;
         }
     }
 
@@ -165,7 +160,6 @@ class TegroConnector {
             await axios.post(constants.CANCEL_ALL_ORDERS_URL, cancelAllObject);
         } catch (error) {
             console.error("Error in cancelAllOrders:", error);
-            throw error;
         }
     }
 
@@ -176,7 +170,6 @@ class TegroConnector {
             return filteredOrders;
         } catch (error) {
             console.error("Error in getAllOrders:", error);
-            throw error;
         }
     }
 
@@ -187,7 +180,7 @@ class TegroConnector {
             return filteredOrders;
         } catch (error) {
             console.error("Error in getActiveOrders:", error);
-            throw error;
+
         }
     }
 
