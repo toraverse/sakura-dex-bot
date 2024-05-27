@@ -84,6 +84,7 @@ class GeckoMarketMaking extends BaseStrategy {
         for (const order of filteredOrders) {
             const orderPrice = BigInt(order.pricePrecision);
             if (orderPrice < minPrice || orderPrice > maxPrice) {
+                console.log('order id for cancelling ',order.orderId);
                 console.log(`Cancelling ${type} order for ${Number(order.price)} because it is outside of the price range [${Number(minPrice) / 10 ** this.tegroConnector.quoteDecimals}, ${Number(maxPrice) / 10 ** this.tegroConnector.quoteDecimals}]`);
                 await this.tegroConnector.cancelOrder(order.orderId).catch(err => console.error(`Failed to cancel order ${order.orderId}: `, err));
                 ordersCancelled++;
