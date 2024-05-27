@@ -82,6 +82,19 @@ const TYPE = {
     ]
 }
 
+const CANCEL_ORDER_TYPE = {
+    CancelOrder: [
+      {
+        name: "orderIds",
+        type: "string[]",
+      },
+      {
+        name: "user",
+        type: "address",
+      }
+    ]
+}
+
 
 module.exports = {
     BASE_URL,
@@ -91,6 +104,7 @@ module.exports = {
     DOMAIN,
     CANCEL_ORDER_URL,
     TYPE,
+    CANCEL_ORDER_TYPE,
     GetUserOrdersUrl,
     GetActiveOrdersUrl,
     GetMarketInfoUrl,
