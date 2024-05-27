@@ -142,7 +142,9 @@ class TegroConnector {
           orderIds: [orderID],
           user: this.wallet.address.toLowerCase(),
         };
-        
+
+        console.log("cancelOrderObjectSignObject ", cancelOrderObjectSignObject)
+
         let signature = await this.signOrder(
           cancelOrderObjectSignObject,
           constants.CANCEL_ORDER_TYPE
@@ -153,6 +155,8 @@ class TegroConnector {
             user_address: this.wallet.address.toLowerCase(),
             signature
         }
+
+        console.log("cancelOrderObject ", cancelOrderObject)
 
         try {
             await axios.post(constants.CANCEL_ORDER_URL, cancelOrderObject);
