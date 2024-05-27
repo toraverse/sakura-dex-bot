@@ -62,9 +62,9 @@ class TegroConnector {
         return domain;
     }
 
-    async signOrder(rawData) {
+    async signOrder(rawData, type) {
         try {
-            return await this.wallet.signTypedData(this.getDomain(), constants.TYPE, rawData);
+            return await this.wallet.signTypedData(this.getDomain(), type, rawData);
         } catch (error) {
             console.error("Error in signOrder:", error);
         }
@@ -101,7 +101,7 @@ class TegroConnector {
             totalQuantity: precisionVolume.toString(),
             expiryTime: '0'
         };
-        const signature = await this.signOrder(rawData);
+        const signature = await this.signOrder(rawData, constants.TYPE);
 
         const orderHash = TypedDataEncoder.hash(this.getDomain(), constants.TYPE, rawData).toString();
         const limit_order = {
@@ -137,11 +137,23 @@ class TegroConnector {
     }
 
     async cancelOrder(orderID) {
-        const cancelOrderObject = {
-            chain_id: constants.CHAIN_ID,
-            id: orderID,
-            signature: await this.wallet.signMessage(this.wallet.address.toLowerCase()),
+
+        let cancelOrderObjectSignObject = {
+          orderIds: [orderID],
+          user: this.wallet.address.toLowerCase(),
         };
+        
+        let signature = await this.signOrder(
+          cancelOrderObjectSignObject,
+          constants.CANCEL_ORDER_TYPE
+        );
+
+        const cancelOrderObject = {
+            order_ids: [orderID],
+            user_address: this.wallet.address.toLowerCase(),
+            signature
+        }
+
         try {
             await axios.post(constants.CANCEL_ORDER_URL, cancelOrderObject);
         }
