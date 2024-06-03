@@ -127,6 +127,13 @@ class GeckoMarketMaking extends BaseStrategy {
     async runMM() {
         const basePrice = await this.fetchCurrentPriceInPrecision();
 
+        console.log('base price ', basePrice)
+
+        if (!basePrice) {
+            console.error('Failed to fetch price. Retrying after some time...');
+            return;
+        }
+        
         let buyPriceLevels = this.calculatePriceLevels(basePrice, this.priceStepLevels, 'buy');
         let sellPriceLevels = this.calculatePriceLevels(basePrice, this.priceStepLevels, 'sell');
 
