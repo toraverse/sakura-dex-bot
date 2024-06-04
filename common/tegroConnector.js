@@ -124,7 +124,8 @@ class TegroConnector {
             const createOrderRequest = await axios.post(constants.CREATE_ORDER_URL, limit_order);
             return createOrderRequest.data;
         } catch (error) {
-            console.log("Error in creating order : ",JSON.stringify(limit_order));
+            console.log("Error in creating order : ", JSON.stringify(limit_order));
+            console.log("Error in creating order : ", error);
             //console.error("Error in placeOrder");
             //console.log("Failed to place an order!");
         }
