@@ -90,7 +90,7 @@ class VolumeTrade extends BaseStrategy {
         }
 
         catch (error) {
-            logger.info("error in counterTrade : ", JSON.stringify(error));
+            logger.info(`error in counterTrade : ", ${error}`);
         }
         setTimeout(() => this.counterTrade(), this.orderRefreshFrequency);
     }

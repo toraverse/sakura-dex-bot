@@ -2,7 +2,11 @@ const winston = require("winston");
 const path = require("path");
 
 // Define the log directory
-const logDir = path.join(__dirname, "logs");
+const logDir = path.join(__dirname, "..", "logs");
+console.log("logDir ", logDir);
+const logFormat = winston.format.printf(({ timestamp, level, message }) => {
+  return ` ${timestamp} : ${level} ${message}`;
+});
 
 // Create a Winston logger instance
 const logger = winston.createLogger({
@@ -11,16 +15,15 @@ const logger = winston.createLogger({
     winston.format.timestamp({
       format: "YYYY-MM-DD HH:mm:ss",
     }),
-    winston.format.printf(
-      (info) => `${info.timestamp} ${info.level}: ${info.message}`
-    )
+    logFormat
   ),
   transports: [
     new winston.transports.Console({
       // Log to console
       format: winston.format.combine(
         winston.format.colorize(),
-        winston.format.simple()
+        winston.format.simple(),
+        logFormat
       ),
     }),
     new winston.transports.File({ filename: path.join(logDir, "app.log") }), // Log to file

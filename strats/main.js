@@ -16,7 +16,7 @@ async function main() {
         await initStrats();
         await runStrats();
     } catch (error) {
-        logger.error("Error in main execution flow : ", JSON.stringify(error));
+        logger.error(`Error in main execution flow : ${error}`);
     }
 }
 
@@ -32,7 +32,7 @@ async function loadStrats() {
             const strategy = createStrategy(config);
             strategies.push(strategy);
         } catch (error) {
-            logger.error(`Error initializing strategy for + ${config.type} ${config.marketSymbol} : `, JSON.stringify(error));
+            logger.error(`Error initializing strategy for ${config.type} ${config.marketSymbol} : ${error}`);
         }
     });
 }
@@ -61,7 +61,7 @@ async function initStrats() {
             logger.info(`Initializing strategy ${strategy.type} for market ${strategy.marketSymbol}`);
             await strategy.init();
         } catch (error) {
-            logger.error("Error initializing strategy : ", JSON.stringify(error));
+            logger.error(`Error initializing strategy : ${error}`);
         }
     }
 }
@@ -72,7 +72,7 @@ async function runStrats() {
             logger.info(`Running strategy ${strategy.type} for market ${strategy.marketSymbol}`);
             await strategy.run();
         } catch (error) {
-            logger.error("Error initializing strategy : ", JSON.stringify(error));
+            logger.error(`Error initializing strategy : ${error}`);
         }
     }
 }

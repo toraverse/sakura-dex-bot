@@ -46,7 +46,7 @@ class TegroConnector {
             logger.info("Market data fetch success");
             return marketData;
         } catch (error) {
-            logger.error("Error in initMarket : ", JSON.stringify(error));
+            logger.error(`Error in initMarket : ${error}`);
         }
         logger.info(
           "Successfully fetched market details for " + this.marketSymbol
@@ -69,7 +69,7 @@ class TegroConnector {
         try {
             return await this.wallet.signTypedData(this.getDomain(), type, rawData);
         } catch (error) {
-            logger.error("Error in signOrder : ", JSON.stringify(error));
+            logger.error(`Error in signOrder : ${error}`);
         }
     }
 
@@ -125,8 +125,8 @@ class TegroConnector {
             const createOrderRequest = await axios.post(constants.CREATE_ORDER_URL, limit_order);
             return createOrderRequest.data;
         } catch (error) {
-            logger.error("Error in creating order : ", JSON.stringify(limit_order));
-            logger.error("Error in creating order : ", JSON.stringify(error));
+            logger.error(`Error in creating order : ${limit_order}`);
+            logger.error(`Error in creating order : ", ${error}`);
         }
     }
 
@@ -173,7 +173,7 @@ class TegroConnector {
         try {
             await axios.post(constants.CANCEL_ALL_ORDERS_URL, cancelAllObject);
         } catch (error) {
-            logger.error("Error in cancelAllOrders : ", JSON.stringify(error));
+            logger.error(`Error in cancelAllOrders : , ${error}`);
         }
     }
 
@@ -183,7 +183,7 @@ class TegroConnector {
             const filteredOrders = myOrdersRequest.data.filter(item => item.marketId === this.marketId);
             return filteredOrders;
         } catch (error) {
-            logger.error("Error in getAllOrders : ", JSON.stringify(error));
+            logger.error(`Error in getAllOrders :  ${error}`);
         }
     }
 
@@ -193,7 +193,7 @@ class TegroConnector {
             const filteredOrders = activeOrdersRequest.data.filter(item => item.marketId === this.marketId);
             return filteredOrders;
         } catch (error) {
-            logger.error("Error in getActiveOrders : ", JSON.stringify(error));
+            logger.error(`Error in getActiveOrders : ${error}`);
 
         }
     }
@@ -217,7 +217,7 @@ class TegroConnector {
             const depthRequest = await axios.get(constants.GetMarketDepthUrl(this.marketSymbol));
             return depthRequest.data;
         } catch (error) {
-            logger.error("Error in getDepth : ", JSON.stringify(error));
+            logger.error(`Error in getDepth : ${error}`);
         }
     }
 
