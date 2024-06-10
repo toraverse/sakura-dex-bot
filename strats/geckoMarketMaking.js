@@ -1,6 +1,7 @@
 const TegroConnector = require('../common/tegroConnector');
 const geckoTerminalLib = require("../common/geckoTerminal");
 const BaseStrategy = require("../common/baseStrategy");
+const logger = require('./lib');
 
 class GeckoMarketMaking extends BaseStrategy {
 
@@ -26,23 +27,25 @@ class GeckoMarketMaking extends BaseStrategy {
     }
 
     async init() {
+        logger.info('initializing geckoMarketMaking strategy for '+ this.marketSymbol);
         await this.tegroConnector.initMarket(this.marketSymbol);
     }
 
 
     async fetchCurrentPriceInPrecision() {
+        this.logger.info('fetching current price for market '+ this.tegroConnector.marketSymbol);
         let floatPrice = await geckoTerminalLib.getPrice(this.chain, this.tegroConnector.baseTokenAddress);
         if (floatPrice === undefined || floatPrice === 0) {
-            console.error("Failed to fetch price from CoinGecko.");
+            logger.error("Failed to fetch price from CoinGecko.");
             return;
         }
-        console.log('\x1b[36m%s\x1b[0m', `Fetched current price: ${floatPrice} for ${this.tegroConnector.marketSymbol}`);
+        logger.info(`Fetched current price: ${floatPrice} for ${this.tegroConnector.marketSymbol}`);
         return floatPrice * 10 ** this.tegroConnector.quoteDecimals;
     }
 
     calculatePriceLevels(basePrice, percentages, type) {
         const priceLevels = percentages.map(percentage => BigInt(Math.floor(basePrice * (1 + (type === 'sell' ? 1 : -1) * percentage / 100))));
-        //console.log(`Calculated ${type} price levels for ${this.tegroConnector.marketSymbol}: ${Number(priceLevels)/10**this.tegroConnector.quoteDecimals}`);
+        logger.info(`Calculated ${type} price levels for ${this.tegroConnector.marketSymbol}: ${Number(priceLevels)/10**this.tegroConnector.quoteDecimals}`);
         return priceLevels;
     }
 
@@ -84,18 +87,18 @@ class GeckoMarketMaking extends BaseStrategy {
         for (const order of filteredOrders) {
             const orderPrice = BigInt(order.pricePrecision);
             if (orderPrice < minPrice || orderPrice > maxPrice) {
-                console.log('order id for cancelling ',order.orderId);
-                console.log(`Cancelling ${type} order for ${Number(order.price)} because it is outside of the price range [${Number(minPrice) / 10 ** this.tegroConnector.quoteDecimals}, ${Number(maxPrice) / 10 ** this.tegroConnector.quoteDecimals}]`);
-                await this.tegroConnector.cancelOrder(order.orderId).catch(err => console.error(`Failed to cancel order ${order.orderId}: `, err));
+                logger.info('order id for cancelling ===> ',order.orderId);
+                logger.info(`Cancelling ${type} order for ${Number(order.price)} because it is outside of the price range [${Number(minPrice) / 10 ** this.tegroConnector.quoteDecimals}, ${Number(maxPrice) / 10 ** this.tegroConnector.quoteDecimals}]`);
+                await this.tegroConnector.cancelOrder(order.orderId).catch(err => logger.error(`Failed to cancel order ${order.orderId}: `, err));
                 ordersCancelled++;
             }
             else {
                 priceLevels.shift();
-                console.log(`NOT cancelling order ${order.price} because it is inside of the price range [${Number(minPrice) / 10 ** this.tegroConnector.quoteDecimals}, ${Number(maxPrice) / 10 ** this.tegroConnector.quoteDecimals}]`);
+                logger.info(`NOT cancelling order ${order.price} because it is inside of the price range [${Number(minPrice) / 10 ** this.tegroConnector.quoteDecimals}, ${Number(maxPrice) / 10 ** this.tegroConnector.quoteDecimals}]`);
             }
         }
 
-        console.log(`\x1b[33m%s\x1b[0m`, `${type} Orders to create: ${priceLevels.length}`);
+        logger.info(`${type} Orders to create: ${priceLevels.length}`);
         return priceLevels;
     }
 
@@ -104,9 +107,9 @@ class GeckoMarketMaking extends BaseStrategy {
 
         // Place new orders based on type
         for (let i = 0; i < ordersToPlace; i++) {
-            console.log(`\x1b[32m`, `Placing new ${type} order at price ${priceLevels[i]} with quantity ${quantities[i]} for ${this.tegroConnector.marketSymbol}...`);
+            logger.info(`Placing new ${type} order at price ${priceLevels[i]} with quantity ${quantities[i]} for ${this.tegroConnector.marketSymbol}...`);
             await this.tegroConnector.placeOrder(type, priceLevels[i], quantities[i])
-                .catch(err => console.error(`Failed to place ${type} order at ${priceLevels[i]}:${quantities[i]} `, err));
+                .catch(err => logger.error(`Failed to place ${type} order at ${priceLevels[i]}:${quantities[i]} `, err));
         }
     }
 
@@ -125,12 +128,12 @@ class GeckoMarketMaking extends BaseStrategy {
     }
 
     async runMM() {
+        logger.info('Starting market making...');
+
         const basePrice = await this.fetchCurrentPriceInPrecision();
 
-        console.log('base price ', basePrice)
-
         if (!basePrice) {
-            console.error('Failed to fetch price. Retrying after some time...');
+            logger.error('Failed to fetch price. Retrying after some time...');
             return;
         }
         
@@ -139,6 +142,8 @@ class GeckoMarketMaking extends BaseStrategy {
 
         let quoteBalance = await this.getQuoteBalance();
         let baseBalance = await this.getBaseBalance();
+        logger.info(`Base balance: ${baseBalance} for token ${this.tegroConnector.baseTokenAddress}`);
+        logger.info(`Quote balance: ${baseBalance} for token ${this.tegroConnector.quoteTokenAddress}`);
 
         baseBalance = baseBalance.toFixed(4); //To help with too many decimals error in Ethers library
 
@@ -150,6 +155,9 @@ class GeckoMarketMaking extends BaseStrategy {
 
         buyPriceLevels = await this.cancelOrders(buyPriceLevels, 'buy');
         sellPriceLevels = await this.cancelOrders(sellPriceLevels, 'sell');
+
+        logger.info('Buy price levels: ', buyPriceLevels);
+        logger.info("Sell price levels: ", sellPriceLevels);
 
         await this.manageOrders(buyPriceLevels, buyQuantities, 'buy');
         await this.manageOrders(sellPriceLevels, sellQuantities, 'sell');

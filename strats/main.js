@@ -1,6 +1,8 @@
 const GeckoMarketMaking = require("./geckoMarketMaking");
 const VolumeTrade = require("./volumeTrade");
 
+const logger = require("./lib");
+
 const fs = require('fs');
 
 // Read the strategy configurations from the JSON file
@@ -14,7 +16,7 @@ async function main() {
         await initStrats();
         await runStrats();
     } catch (error) {
-        console.error("Error in main execution flow:", error);
+        logger.error("Error in main execution flow : ", JSON.stringify(error));
     }
 }
 
@@ -22,14 +24,15 @@ async function main() {
 async function loadStrats() {
     strategyConfigs.forEach(config => {
         if (!config.active) {
-            console.log('\x1b[36m%s\x1b[0m',`Skipping inactive strategy: ${config.type} ${config.marketSymbol}`);
+            logger.info(`Skipping inactive strategy : ${config.type} ${config.marketSymbol}`);
             return;  // Skip this iteration, do not load the strategy
         }
         try {
+            logger.info(`Loading strategy : ${config.type} ${config.marketSymbol}`);
             const strategy = createStrategy(config);
             strategies.push(strategy);
         } catch (error) {
-            console.error('Error initializing strategy for + ${config.type} ${config.marketSymbol}:', error);
+            logger.error(`Error initializing strategy for + ${config.type} ${config.marketSymbol} : `, JSON.stringify(error));
         }
     });
 }
@@ -38,12 +41,16 @@ async function loadStrats() {
 function createStrategy(config) {
     switch (config.type) {
         case 'GeckoMM':
-            console.log("Loading strategy " + config.type + "with config", config);
+            logger.info("Loading strategy " + config.type + "with config", config);
             return new GeckoMarketMaking(config);
         case 'VolumeTrade':
-            console.log("Loading strategy " + config.type + "with config", config);
+            logger.info(
+              "Loading strategy " + config.type + "with config",
+              config
+            );
             return new VolumeTrade(config);
         default:
+            logger.error("Unknown strategy type: " + config.type);
             throw new Error(`Unknown strategy type: ${config.type}`);
     }
 }
@@ -51,9 +58,10 @@ function createStrategy(config) {
 async function initStrats() {
     for (const strategy of strategies) {
         try {
+            logger.info(`Initializing strategy ${strategy.type} for market ${strategy.marketSymbol}`);
             await strategy.init();
         } catch (error) {
-            console.error("Error initializing strategy:", error);
+            logger.error("Error initializing strategy : ", JSON.stringify(error));
         }
     }
 }
@@ -61,9 +69,10 @@ async function initStrats() {
 async function runStrats() {
     for (const strategy of strategies) {
         try {
+            logger.info(`Running strategy ${strategy.type} for market ${strategy.marketSymbol}`);
             await strategy.run();
         } catch (error) {
-            console.error("Error initializing strategy:", error);
+            logger.error("Error initializing strategy : ", JSON.stringify(error));
         }
     }
 }
