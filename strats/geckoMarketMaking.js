@@ -69,6 +69,9 @@ class GeckoMarketMaking extends BaseStrategy {
     }
 
     async cancelOrders(priceLevels, type) {
+        logger.info(`Cancelling ${type} orders for ${this.tegroConnector.marketSymbol}`);
+        logger.info(`priceLevels for cancelling ${JSON.stringify(priceLevels)}` );
+        logger.info(`length of priceLevels for cancelling ${priceLevels.length}` );
         let openOrders = await this.tegroConnector.getActiveOrders();
         let filteredOrders = this.tegroConnector.filterActiveOrdersBySide(openOrders, type);
         const initialPriceLevels = priceLevels.length;
