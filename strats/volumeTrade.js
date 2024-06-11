@@ -82,7 +82,7 @@ class VolumeTrade extends BaseStrategy {
             logger.info(`fetched best bid and ask for ${this.marketSymbol} is ${bestBid} and ${bestAsk}`);
             //Calculate the mid price
             let midPrice = Math.floor((bestBid + bestAsk) / 2);
-            logger.info("fetched mid price : ", midPrice);
+            logger.info(`fetched mid price : ${midPrice}`);
 
             //Calculate buy quantity based on available balance
             let quantity = quoteBalance / midPrice * (10 ** this.tegroConnector.baseDecimals);
