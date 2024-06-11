@@ -10,6 +10,7 @@ class VolumeTrade extends BaseStrategy {
     orderRefreshFrequency;
     maxQuoteBalanceUtilization;
     maxBaseBalanceUtilization;
+    type;
 
     constructor(config) {
         super();
@@ -18,6 +19,7 @@ class VolumeTrade extends BaseStrategy {
         this.tegroConnector = new TegroConnector(this.marketSymbol, config.Wallet);
         this.maxQuoteBalanceUtilization = config.maxQuoteBalanceUtilization;
         this.maxBaseBalanceUtilization = config.maxBaseBalanceUtilization;
+        this.type = "volume trade"
     }
 
     async init() {

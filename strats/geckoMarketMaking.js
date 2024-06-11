@@ -13,7 +13,8 @@ class GeckoMarketMaking extends BaseStrategy {
     priceStepLevels; // Percentage steps for price levels (buy & sell)
     walletAllocation; // Percentage allocation of the wallet for each order
     orderRefreshFrequency;
-
+    type;
+    
     constructor(config) {
         super();
         this.chain = config.chain;
@@ -24,6 +25,7 @@ class GeckoMarketMaking extends BaseStrategy {
         this.walletAllocation = config.walletAllocation;
         this.orderRefreshFrequency = config.orderRefreshFrequency;
         this.tegroConnector = new TegroConnector(this.marketSymbol, config.Wallet);
+        this.type = "geckoMarketMaking"
     }
 
     async init() {
@@ -33,7 +35,7 @@ class GeckoMarketMaking extends BaseStrategy {
 
 
     async fetchCurrentPriceInPrecision() {
-        this.logger.info('fetching current price for market '+ this.tegroConnector.marketSymbol);
+        logger.info('fetching current price for market '+ this.tegroConnector.marketSymbol);
         let floatPrice = await geckoTerminalLib.getPrice(this.chain, this.tegroConnector.baseTokenAddress);
         if (floatPrice === undefined || floatPrice === 0) {
             logger.error("Failed to fetch price from CoinGecko.");
@@ -45,7 +47,7 @@ class GeckoMarketMaking extends BaseStrategy {
 
     calculatePriceLevels(basePrice, percentages, type) {
         const priceLevels = percentages.map(percentage => BigInt(Math.floor(basePrice * (1 + (type === 'sell' ? 1 : -1) * percentage / 100))));
-        logger.info(`Calculated ${type} price levels for ${this.tegroConnector.marketSymbol}: ${Number(priceLevels)/10**this.tegroConnector.quoteDecimals}`);
+        logger.info(`Calculated ${type} price levels for ${this.tegroConnector.marketSymbol}: ${priceLevels}`);
         return priceLevels;
     }
 
@@ -136,7 +138,7 @@ class GeckoMarketMaking extends BaseStrategy {
             logger.error('Failed to fetch price. Retrying after some time...');
             return;
         }
-        
+        logger.info(`Current price: ${basePrice} for ${this.tegroConnector.marketSymbol}`);
         let buyPriceLevels = this.calculatePriceLevels(basePrice, this.priceStepLevels, 'buy');
         let sellPriceLevels = this.calculatePriceLevels(basePrice, this.priceStepLevels, 'sell');
 

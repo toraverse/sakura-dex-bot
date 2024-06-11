@@ -29,7 +29,6 @@ async function loadStrats() {
         }
         try {
             logger.info(`Loading strategy : ${config.type} ${config.marketSymbol}`);
-            console.log('config ', config);
             const strategy = createStrategy(config);
             strategies.push(strategy);
         } catch (error) {
@@ -42,7 +41,7 @@ async function loadStrats() {
 function createStrategy(config) {
     switch (config.type) {
         case 'GeckoMM':
-            logger.info("Loading strategy " + config.type + " with config ", config);
+            logger.info("Loading strategy " + config.type + " with config ");
             return new GeckoMarketMaking(config);
         case 'VolumeTrade':
             logger.info(
@@ -58,7 +57,6 @@ function createStrategy(config) {
 
 async function initStrats() {
     for (const strategy of strategies) {
-        console.log('strategy loading ', strategy);
         try {
             logger.info(`Initializing strategy ${strategy.type} for market ${strategy.marketSymbol}`);
             await strategy.init();

@@ -79,7 +79,7 @@ class TegroConnector {
             logger.info("Invalid order price or volume");
         }
 
-        logger.info(`Trying to place a ${side} order for: ${precisionPrice} ${precisionVolume} in ${this.marketSymbol}`);
+        logger.info(`Trying to place a ${side} order for price ==> ${precisionPrice} and volume ==> ${precisionVolume} in ${this.marketSymbol}`);
 
         let rawData;
 
@@ -125,8 +125,8 @@ class TegroConnector {
             const createOrderRequest = await axios.post(constants.CREATE_ORDER_URL, limit_order);
             return createOrderRequest.data;
         } catch (error) {
-            logger.error(`Error in creating order : ${limit_order}`);
-            logger.error(`Error in creating order : ", ${error}`);
+            logger.error(`Error in creating order : ${JSON.stringify(limit_order)}`);
+            logger.error(`Error in creating order : ", ${JSON.stringify(error)}`);
         }
     }
 
