@@ -4,6 +4,11 @@ const TegroConnector = require('../common/tegroConnector');
 const BaseStrategy = require("../common/baseStrategy");
 const logger = require('./lib');
 
+BigInt.prototype.toJSON = function () {
+  return this.toString();
+};
+
+
 class VolumeTrade extends BaseStrategy {
     marketSymbol;
     tegroConnector;
@@ -57,7 +62,7 @@ class VolumeTrade extends BaseStrategy {
 
             //Get the current depth
             const depth = await this.tegroConnector.getDepth();
-            logger.info(`fetched depth : ${depth}`);
+            logger.info(`fetched depth : ${JSON.stringify(depth)}`);
             //Return if there is no liquidity in the orderbook
             if (!depth.Asks?.length >= 1 && !depth.Bids?.length >= 1) {
                 logger.warn("no liquidity in the orderbook");
