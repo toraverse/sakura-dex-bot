@@ -16,7 +16,7 @@ const geckoTerminalLib = {
                 logger.error("Price data is missing in the response");
             }
         } catch (error) {
-            logger.error("Failed to fetch price: " + JSON.stringify(error));
+            logger.error(`Failed to fetch price: ${error}`);
         }
     }
 };
