@@ -161,8 +161,8 @@ class GeckoMarketMaking extends BaseStrategy {
         buyPriceLevels = await this.cancelOrders(buyPriceLevels, 'buy');
         sellPriceLevels = await this.cancelOrders(sellPriceLevels, 'sell');
 
-        logger.info('Buy price levels: ', buyPriceLevels);
-        logger.info("Sell price levels: ", sellPriceLevels);
+        logger.info(`Buy price levels:  ${buyPriceLevels}`);
+        logger.info(`Sell price levels: ${sellPriceLevels}`);
 
         await this.manageOrders(buyPriceLevels, buyQuantities, 'buy');
         await this.manageOrders(sellPriceLevels, sellQuantities, 'sell');
