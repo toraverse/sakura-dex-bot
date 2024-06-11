@@ -9,6 +9,9 @@ const fs = require('fs');
 const strategyConfigs = JSON.parse(fs.readFileSync("./config/prod.json", "utf8"));
 let strategies = [];
 
+BigInt.prototype.toJSON = function () {
+  return this.toString();
+};
 
 async function main() {
     try {
