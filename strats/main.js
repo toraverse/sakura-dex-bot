@@ -58,6 +58,7 @@ function createStrategy(config) {
 
 async function initStrats() {
     for (const strategy of strategies) {
+        console.log('strategy loading ', strategy);
         try {
             logger.info(`Initializing strategy ${strategy.type} for market ${strategy.marketSymbol}`);
             await strategy.init();
