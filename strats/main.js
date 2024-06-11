@@ -71,7 +71,7 @@ async function initStrats() {
 async function runStrats() {
     for (const strategy of strategies) {
         try {
-            logger.info(`Running strategy ${strategy.type} for market ${strategy.marketSymbol}`);
+            logger.info(`Running strategy for market ${strategy.marketSymbol}`);
             await strategy.run();
         } catch (error) {
             logger.error(`Error initializing strategy : ${error}`);
