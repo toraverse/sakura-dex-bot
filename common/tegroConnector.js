@@ -2,6 +2,7 @@ const { ethers, TypedDataEncoder, JsonRpcApiProvider, Typed } = require("ethers"
 const axios = require('axios');
 require('dotenv').config();
 const constants = require('./constants');
+const logger = require('../strats/lib');
 
 class TegroConnector {
 
@@ -30,11 +31,11 @@ class TegroConnector {
             this.verifyingContract = chainInfo[0].exchange_contract;
         }
         catch (error) {
-            console.error("Error in initMarket:", error);
+            logger.error("Error in initMarket:", error);
         }
 
         try {
-            console.log("Trying to fetch market details for " + this.marketSymbol);
+            logger.info("Trying to fetch market details for " + this.marketSymbol);
             const marketInfoReq = await axios.get(constants.GetMarketInfoUrl(this.marketSymbol));
             const marketData = marketInfoReq.data.data[0];
             this.baseDecimals = marketData.base_decimal;
@@ -42,12 +43,14 @@ class TegroConnector {
             this.baseTokenAddress = marketData.base_contract_address;
             this.quoteTokenAddress = marketData.quote_contract_address;
             this.marketId = marketData.id;
-            console.log("Market data fetch success");
+            logger.info("Market data fetch success");
             return marketData;
         } catch (error) {
-            console.error("Error in initMarket:", error);
+            logger.error(`Error in initMarket : ${error}`);
         }
-        console.log("Successfully fetched market details for " + this.marketSymbol);
+        logger.info(
+          "Successfully fetched market details for " + this.marketSymbol
+        );
     }
 
     getDomain()
@@ -66,20 +69,17 @@ class TegroConnector {
         try {
             return await this.wallet.signTypedData(this.getDomain(), type, rawData);
         } catch (error) {
-            console.error("Error in signOrder:", error);
+            logger.error(`Error in signOrder : ${error}`);
         }
     }
 
     async placeOrder(side, precisionPrice, precisionVolume) {
 
         if (precisionPrice <= 0 || precisionVolume <= 0) {
-            console.log("Invalid order price or volume");
+            logger.info("Invalid order price or volume");
         }
 
-        //precisionPrice = Math.floor(precisionPrice);
-        //precisionVolume = Math.floor(precisionVolume);
-
-        console.log(`Trying to place a ${side} order for: ${precisionPrice} ${precisionVolume} in ${this.marketSymbol}`);
+        logger.info(`Trying to place a ${side} order for price ==> ${precisionPrice} and volume ==> ${precisionVolume} in ${this.marketSymbol}`);
 
         let rawData;
 
@@ -88,6 +88,7 @@ class TegroConnector {
         } else if (side === "sell") {
             side = 0;
         } else {
+            logger.error("Invalid order side: " + side);
             throw new Error(`Invalid order side: ${side}`);
         }
 
@@ -124,10 +125,8 @@ class TegroConnector {
             const createOrderRequest = await axios.post(constants.CREATE_ORDER_URL, limit_order);
             return createOrderRequest.data;
         } catch (error) {
-            console.log("Error in creating order : ", JSON.stringify(limit_order));
-            console.log("Error in creating order : ", error);
-            //console.error("Error in placeOrder");
-            //console.log("Failed to place an order!");
+            logger.error(`Error in creating order : ${JSON.stringify(limit_order)}`);
+            logger.error(`Error in creating order : ", ${JSON.stringify(error)}`);
         }
     }
 
@@ -144,8 +143,6 @@ class TegroConnector {
           user: this.wallet.address.toLowerCase(),
         };
 
-        console.log("cancelOrderObjectSignObject ", cancelOrderObjectSignObject)
-
         let signature = await this.signOrder(
           cancelOrderObjectSignObject,
           constants.CANCEL_ORDER_TYPE
@@ -157,13 +154,13 @@ class TegroConnector {
             signature
         }
 
-        console.log("cancelOrderObject ", cancelOrderObject)
+        logger.info("cancelOrderObject ", JSON.stringify(cancelOrderObject))
 
         try {
             await axios.post(constants.CANCEL_ORDER_URL, cancelOrderObject);
         }
         catch (error) {
-            console.error("Error in cancelOrder:", error);
+            logger.error("Error in cancelOrder:", error);
         }
     }
 
@@ -176,7 +173,7 @@ class TegroConnector {
         try {
             await axios.post(constants.CANCEL_ALL_ORDERS_URL, cancelAllObject);
         } catch (error) {
-            console.error("Error in cancelAllOrders:", error);
+            logger.error(`Error in cancelAllOrders : , ${error}`);
         }
     }
 
@@ -186,7 +183,7 @@ class TegroConnector {
             const filteredOrders = myOrdersRequest.data.filter(item => item.marketId === this.marketId);
             return filteredOrders;
         } catch (error) {
-            console.error("Error in getAllOrders:", error);
+            logger.error(`Error in getAllOrders :  ${error}`);
         }
     }
 
@@ -196,7 +193,7 @@ class TegroConnector {
             const filteredOrders = activeOrdersRequest.data.filter(item => item.marketId === this.marketId);
             return filteredOrders;
         } catch (error) {
-            console.error("Error in getActiveOrders:", error);
+            logger.error(`Error in getActiveOrders : ${error}`);
 
         }
     }
@@ -220,7 +217,7 @@ class TegroConnector {
             const depthRequest = await axios.get(constants.GetMarketDepthUrl(this.marketSymbol));
             return depthRequest.data;
         } catch (error) {
-            console.error("Error in getDepth:", error);
+            logger.error(`Error in getDepth : ${error}`);
         }
     }
 

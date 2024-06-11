@@ -1,6 +1,7 @@
 const axios = require('axios');
 const constants = require('./constants');
 require('dotenv').config();
+const { logger } = require('../strats/lib');
 
 const baseUrl = constants.GECKO_TERMINAL_BASE_URL;
 
@@ -12,10 +13,10 @@ const geckoTerminalLib = {
             if (response.data && response.data.data.attributes && response.data.data.attributes.price_usd) {
                 return parseFloat(response.data.data.attributes.price_usd);
             } else {
-                console.error('Price data is missing in the response');
+                logger.error("Price data is missing in the response");
             }
         } catch (error) {
-            console.log('Failed to fetch price: ' + error);
+            logger.error("Failed to fetch price: " + JSON.stringify(error));
         }
     }
 };
