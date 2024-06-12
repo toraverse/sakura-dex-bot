@@ -29,7 +29,7 @@ class GeckoMarketMaking extends BaseStrategy {
     }
 
     async init() {
-        logger.info('initializing geckoMarketMaking strategy for '+ this.marketSymbol);
+        logger.info(`initializing geckoMarketMaking strategy for ${this.marketSymbol}`);
         await this.tegroConnector.initMarket(this.marketSymbol);
     }
 
@@ -92,7 +92,7 @@ class GeckoMarketMaking extends BaseStrategy {
         for (const order of filteredOrders) {
             const orderPrice = BigInt(order.pricePrecision);
             if (orderPrice < minPrice || orderPrice > maxPrice) {
-                logger.info('order id for cancelling ===> ',order.orderId);
+                logger.info(`order id for cancelling ===> ${order.orderId}`);
                 logger.info(`Cancelling ${type} order for ${Number(order.price)} because it is outside of the price range [${Number(minPrice) / 10 ** this.tegroConnector.quoteDecimals}, ${Number(maxPrice) / 10 ** this.tegroConnector.quoteDecimals}]`);
                 await this.tegroConnector.cancelOrder(order.orderId).catch(err => logger.error(`Failed to cancel order ${order.orderId}: `, err));
                 ordersCancelled++;

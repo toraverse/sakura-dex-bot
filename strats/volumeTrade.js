@@ -28,7 +28,7 @@ class VolumeTrade extends BaseStrategy {
     }
 
     async init() {
-        logger.info('initializing volume trade strategy for '+ this.marketSymbol);
+        logger.info(`initializing volume trade strategy for ${this.marketSymbol}`);
         await this.tegroConnector.initMarket(this.marketSymbol);
     }
 

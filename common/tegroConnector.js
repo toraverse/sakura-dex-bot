@@ -128,7 +128,8 @@ class TegroConnector {
             return createOrderRequest.data;
         } catch (error) {
             logger.error(`Error in creating order : ${JSON.stringify(limit_order)}`);
-            logger.error(`Error in creating order : ", ${JSON.stringify(error)}`);
+            logger.error(`Error in creating order stringified : ${JSON.stringify(error)}`);
+            logger.error(`Error in creating order :  ${JSON.stringify(error)}`);
         }
     }
 
@@ -156,7 +157,7 @@ class TegroConnector {
             signature
         }
 
-        logger.info("cancelOrderObject ", JSON.stringify(cancelOrderObject))
+        logger.info(`cancelOrderObject ${cancelOrderObject}`)
 
         try {
             await axios.post(constants.CANCEL_ORDER_URL, cancelOrderObject);
