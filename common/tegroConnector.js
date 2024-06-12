@@ -130,8 +130,12 @@ class TegroConnector {
             logger.error(`Error in creating order : ${JSON.stringify(limit_order)}`);
             logger.error(`Error in creating order stringified : ${JSON.stringify(error)}`);
             logger.error(`Error in creating order :  ${error}`);
-            // console.log("error in creating order ===> ", error);
-            logger.error("Error fetching price data: %O", error);
+            console.log("error in creating order ===> ", error);
+            logger.error(
+                  "Error fetching price data: %s",
+                  JSON.stringify(error, Object.getOwnPropertyNames(error))
+            );
+;
         }
     }
 
