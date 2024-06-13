@@ -65,7 +65,7 @@ class VolumeTrade extends BaseStrategy {
             logger.info(`fetched depth : ${JSON.stringify(depth)}`);
             //Return if there is no liquidity in the orderbook
             if (!depth.Asks?.length >= 1 && !depth.Bids?.length >= 1) {
-                logger.warn("no liquidity in the orderbook");
+                logger.error("no liquidity in the orderbook");
                 return;
             }
 
