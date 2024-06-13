@@ -55,7 +55,7 @@ class VolumeTrade extends BaseStrategy {
     }
 
     async counterTrade() {
-        logger.info("starting counter trade for " + this.marketSymbol);
+        logger.info(`starting counter trade for  ${this.marketSymbol}`);
         try {
             //First cancel all existing orders
             await this.cancelOrders();
@@ -65,7 +65,9 @@ class VolumeTrade extends BaseStrategy {
             logger.info(`fetched depth : ${JSON.stringify(depth)}`);
             //Return if there is no liquidity in the orderbook
             if (!depth.Asks?.length >= 1 && !depth.Bids?.length >= 1) {
-                logger.error("no liquidity in the orderbook");
+                logger.error(
+                  `no liquidity in the orderbook for market ${this.marketSymbol}`
+                );
                 return;
             }
 
