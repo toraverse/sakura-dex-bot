@@ -79,8 +79,8 @@ class VolumeTrade extends BaseStrategy {
             baseBalance = BigInt(baseBalance * 10 ** this.tegroConnector.baseDecimals);
 
             //Calculate the best bid and ask
-            const bestBid = Number(depth.Bids[0].price);
-            const bestAsk = Number(depth.Asks[depth.Asks.length - 1].price);
+            const bestBid = Number(depth.bids[0].price);
+            const bestAsk = Number(depth.asks[depth.asks.length - 1].price);
             logger.info(`fetched best bid and ask for ${this.marketSymbol} is ${bestBid} and ${bestAsk}`);
             //Calculate the mid price
             let midPrice = Math.floor((bestBid + bestAsk) / 2);
@@ -99,7 +99,8 @@ class VolumeTrade extends BaseStrategy {
         }
 
         catch (error) {
-            logger.info(`error in counterTrade : ", ${error}`);
+            logger.error(`error in counterTrade : ", ${error}`);
+            console.log(error)
         }
         setTimeout(() => this.counterTrade(), this.orderRefreshFrequency);
     }
