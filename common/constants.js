@@ -35,7 +35,7 @@ function GetMarketInfoUrl(marketSymbol) {
 }
 
 function GetMarketDepthUrl(marketSymbol) {
-    return `${BASE_URL}/api/v1/trading/market/orderbook/depth?chain_id=${CHAIN_ID}&market_symbol=${marketSymbol}`;
+    return `${BASE_URL}/api/v1/orderbook/depth?chain_id=${CHAIN_ID}&market_symbol=${marketSymbol}`;
 }
 
 const DOMAIN = {
