@@ -64,7 +64,7 @@ class VolumeTrade extends BaseStrategy {
             const depth = await this.tegroConnector.getDepth();
             logger.info(`fetched depth : ${JSON.stringify(depth)}`);
             //Return if there is no liquidity in the orderbook
-            if (!depth.Asks?.length >= 1 && !depth.Bids?.length >= 1) {
+            if (!depth.asks?.length >= 1 && !depth.bids?.length >= 1) {
                 logger.error(
                   `no liquidity in the orderbook for market ${this.marketSymbol}`
                 );
