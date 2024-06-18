@@ -2,6 +2,7 @@ const TegroConnector = require('../common/tegroConnector');
 const geckoTerminalLib = require("../common/geckoTerminal");
 const BaseStrategy = require("../common/baseStrategy");
 const logger = require('./lib');
+const constants = require('../common/constants');
 
 class GeckoMarketMaking extends BaseStrategy {
 
@@ -42,7 +43,7 @@ class GeckoMarketMaking extends BaseStrategy {
             return;
         }
         logger.info(`Fetched current price: ${floatPrice} for ${this.tegroConnector.marketSymbol}`);
-        return floatPrice * 10 ** this.tegroConnector.quoteDecimals;
+        return floatPrice * 10 ** constants.PRICE_EXPONENT;
     }
 
     calculatePriceLevels(basePrice, percentages, type) {
@@ -54,7 +55,7 @@ class GeckoMarketMaking extends BaseStrategy {
     calculateQuantities(priceLevels, balance, percentages) {
         const quantities = priceLevels.map((priceLevel, index) => {
             const totalPrice = balance * (percentages[index] / 100);
-            const quantity = totalPrice / Number(priceLevel) * (10 ** this.tegroConnector.baseDecimals);
+            const quantity = totalPrice / Number(priceLevel) * (10 ** this.tegroConnector.basePrecision);
             return BigInt(Math.floor(quantity));
         });
         return quantities;
@@ -152,8 +153,8 @@ class GeckoMarketMaking extends BaseStrategy {
 
         baseBalance = baseBalance.toFixed(4); //To help with too many decimals error in Ethers library
 
-        quoteBalance *= 10 ** this.tegroConnector.quoteDecimals;
-        baseBalance *= 10 ** this.tegroConnector.baseDecimals;
+        quoteBalance *= 10 ** constants.PRICE_EXPONENT;
+        baseBalance *= 10 ** this.tegroConnector.basePrecision;
 
         const buyQuantities = this.calculateQuantities(buyPriceLevels, quoteBalance, this.walletAllocation);
         const sellQuantities = this.calculateSellQuantities(sellPriceLevels, baseBalance, this.walletAllocation);

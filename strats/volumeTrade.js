@@ -76,7 +76,7 @@ class VolumeTrade extends BaseStrategy {
             let baseBalance = await this.getBaseBalance();
             logger.info(`fetched balance for ${this.marketSymbol} ==> Quote : ${quoteBalance}  Base : ${baseBalance}`);
             baseBalance.toFixed(4); //To help with ethers error of too long numbers
-            baseBalance = BigInt(baseBalance * 10 ** this.tegroConnector.baseDecimals);
+            baseBalance = BigInt(baseBalance * 10 ** this.tegroConnector.basePrecision);
 
             //Calculate the best bid and ask
             const bestBid = Number(depth.bids[0].price);
@@ -87,15 +87,26 @@ class VolumeTrade extends BaseStrategy {
             logger.info(`fetched mid price : ${midPrice}`);
 
             //Calculate buy quantity based on available balance
-            let quantity = quoteBalance / midPrice * (10 ** this.tegroConnector.baseDecimals);
+            let quantity = quoteBalance / midPrice * (10 ** this.tegroConnector.basePrecision);
             //Set the quantity to be bought and sold to be the min of MaxBuyingPower/MaxSellingPower
             quantity = quantity < baseBalance ? quantity : baseBalance;
             
             logger.info(`calculated buy quantity is : ${quantity} for token ${this.marketSymbol}`);
-
+            const calculatedPrice = midPrice * (10 ** PRICE_EXPONENT);
+            const calculatedQuantity = midPrice * (10 ** this.tegroConnector.basePrecision);
+            
+            logger.info(`calculated price is : ${calculatedPrice} for token ${this.marketSymbol}`);
             //Place the orders
-            await this.tegroConnector.placeOrder("buy", midPrice, quantity);
-            await this.tegroConnector.placeOrder("sell", midPrice, quantity);
+              await this.tegroConnector.placeOrder(
+                "buy",
+                midPrice,
+                calculatedQuantity
+              );
+            await this.tegroConnector.placeOrder(
+              "sell",
+              midPrice,
+              calculatedQuantity
+            );
         }
 
         catch (error) {

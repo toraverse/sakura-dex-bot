@@ -14,6 +14,8 @@ class TegroConnector {
     marketId;
     wallet;
     verifyingContract;
+    basePrecision;
+    quotePrecision;
 
     constructor(marketSymbol, privateKeyVariableName = "PRIVATE_KEY") {
         this.marketSymbol = marketSymbol;
@@ -43,6 +45,8 @@ class TegroConnector {
             this.baseTokenAddress = marketData.base_contract_address;
             this.quoteTokenAddress = marketData.quote_contract_address;
             this.marketId = marketData.id;
+            this.basePrecision = marketData.base_precision;
+            this.quotePrecision = marketData.quote_precision;
             logger.info("Market data fetch success");
             return marketData;
         } catch (error) {

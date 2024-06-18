@@ -2,6 +2,7 @@
 
 const tradingBotLib = require('../common/trading-lib');
 const geckoTerminalLib = require("../common/gecko-terminal");
+const constants = require('../common/constants');
 
 const chain = "base";
 const sourceTokenAddress = "0x4200000000000000000000000000000000000006";//Uniswap market GeckoTerminal (source)
@@ -18,7 +19,8 @@ function calculatePriceLevels(basePrice, percentages, type) {
 
 function calculateQuantities(priceLevels, balance, percentages) {
     return priceLevels.map((priceLevel, index) => {
-        const totalPrice = (balance * (percentages[index] / 100));
+        let totalPrice = (balance * (percentages[index] / 100));
+        totalPrice = totalPrice * (10 ** constants.PRICE_EXPONENT);
         const quantity = (totalPrice / priceLevel) * (10 ** tradingBotLib.baseDecimals);
         return quantity;
     });
