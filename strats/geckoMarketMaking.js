@@ -42,8 +42,16 @@ class GeckoMarketMaking extends BaseStrategy {
             logger.error("Failed to fetch price from CoinGecko.");
             return;
         }
+        console.log("floatPrice ", floatPrice);
+
+        let floatPriceAcceptableValue = parseFloat(
+          parseFloat(floatPrice).toFixed(this.tegroConnector.quotePrecision)
+        );
+
+        console.log("floatPriceAcceptableValue ", floatPriceAcceptableValue);
+
         logger.info(`Fetched current price: ${floatPrice} for ${this.tegroConnector.marketSymbol}`);
-        return floatPrice * 10 ** constants.PRICE_EXPONENT;
+        return floatPriceAcceptableValue * 10 ** constants.PRICE_EXPONENT;
     }
 
     calculatePriceLevels(basePrice, percentages, type) {
@@ -55,7 +63,22 @@ class GeckoMarketMaking extends BaseStrategy {
     calculateQuantities(priceLevels, balance, percentages) {
         const quantities = priceLevels.map((priceLevel, index) => {
             const totalPrice = balance * (percentages[index] / 100);
-            const quantity = totalPrice / Number(priceLevel) * (10 ** this.tegroConnector.basePrecision);
+            let totalPriceAcceptable = parseFloat(
+              parseFloat(totalPrice).toFixed(this.tegroConnector.basePrecision)
+            );
+
+            console.log("totalPriceAcceptable : ", totalPriceAcceptable);
+            console.log(
+              "this.tegroConnector.basePrecision : ",
+              this.tegroConnector.basePrecision
+            );
+            const quantity =
+              (totalPriceAcceptable / Number(priceLevel)) *
+                10 ** this.tegroConnector.basePrecision;
+            
+            console.log("quantity ", quantity);
+            console.log("Math.floor(quantity) ", Math.floor(quantity));
+            console.log("quantity toString ", quantity.toString());
             return BigInt(Math.floor(quantity));
         });
         return quantities;
@@ -154,7 +177,7 @@ class GeckoMarketMaking extends BaseStrategy {
         baseBalance = baseBalance.toFixed(4); //To help with too many decimals error in Ethers library
 
         quoteBalance *= 10 ** constants.PRICE_EXPONENT;
-        baseBalance *= 10 ** this.tegroConnector.basePrecision;
+        baseBalance *= 10 ** this.tegroConnector.baseDecimals;
 
         const buyQuantities = this.calculateQuantities(buyPriceLevels, quoteBalance, this.walletAllocation);
         const sellQuantities = this.calculateSellQuantities(sellPriceLevels, baseBalance, this.walletAllocation);
@@ -164,7 +187,8 @@ class GeckoMarketMaking extends BaseStrategy {
 
         logger.info(`Buy price levels:  ${JSON.stringify(buyPriceLevels)}`);
         logger.info(`Sell price levels: ${JSON.stringify(sellPriceLevels)}`);
-
+        console.log('buyQuantities ', buyQuantities);
+        console.log("sellQuantities ", sellQuantities);
         await this.manageOrders(buyPriceLevels, buyQuantities, 'buy');
         await this.manageOrders(sellPriceLevels, sellQuantities, 'sell');
 

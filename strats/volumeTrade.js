@@ -76,7 +76,7 @@ class VolumeTrade extends BaseStrategy {
             let baseBalance = await this.getBaseBalance();
             logger.info(`fetched balance for ${this.marketSymbol} ==> Quote : ${quoteBalance}  Base : ${baseBalance}`);
             baseBalance.toFixed(4); //To help with ethers error of too long numbers
-            baseBalance = BigInt(baseBalance * 10 ** this.tegroConnector.basePrecision);
+            baseBalance = BigInt(baseBalance * 10 ** this.tegroConnector.baseDecimals);
 
             //Calculate the best bid and ask
             const bestBid = Number(depth.bids[0].price);
@@ -91,9 +91,10 @@ class VolumeTrade extends BaseStrategy {
             //Set the quantity to be bought and sold to be the min of MaxBuyingPower/MaxSellingPower
             quantity = quantity < baseBalance ? quantity : baseBalance;
             
+
             logger.info(`calculated buy quantity is : ${quantity} for token ${this.marketSymbol}`);
             const calculatedPrice = midPrice * (10 ** PRICE_EXPONENT);
-            const calculatedQuantity = midPrice * (10 ** this.tegroConnector.basePrecision);
+            const calculatedQuantity = midPrice * (10 ** this.tegroConnector.baseDecimals);
             
             logger.info(`calculated price is : ${calculatedPrice} for token ${this.marketSymbol}`);
             //Place the orders

@@ -27,19 +27,25 @@ class TegroConnector {
     async initMarket() {
         //Get the verifying contract address
         try {
+            console.log("constants.CHAIN_LIST_URL ", constants.CHAIN_LIST_URL);
             const chainList = await axios.get(constants.CHAIN_LIST_URL);
             const chainData = chainList.data.data;
             const chainInfo = chainData.filter(item => item.id === constants.CHAIN_ID);
             this.verifyingContract = chainInfo[0].exchange_contract;
         }
         catch (error) {
-            logger.error("Error in initMarket:", error);
+            logger.error("Error in initMarket for fetching chain infor :", error);
         }
 
         try {
             logger.info("Trying to fetch market details for " + this.marketSymbol);
+            console.log(
+              "constants.GetMarketInfoUrl(this.marketSymbol) ",
+              constants.GetMarketInfoUrl(this.marketSymbol)
+            );
             const marketInfoReq = await axios.get(constants.GetMarketInfoUrl(this.marketSymbol));
             const marketData = marketInfoReq.data.data[0];
+            console.log("marketData ", marketData);
             this.baseDecimals = marketData.base_decimal;
             this.quoteDecimals = marketData.quote_decimal;
             this.baseTokenAddress = marketData.base_contract_address;
@@ -95,6 +101,9 @@ class TegroConnector {
             logger.error("Invalid order side: " + side);
             throw new Error(`Invalid order side: ${side}`);
         }
+
+        console.log("precisionVolume ", precisionVolume.toString());
+        console.log("precisionPrice ", precisionPrice.toString());
 
         rawData = {
             baseToken: this.baseTokenAddress,

@@ -75,7 +75,7 @@ async function runStrats() {
             logger.info(`Running strategy for market ${strategy.marketSymbol}`);
             await strategy.run();
         } catch (error) {
-            logger.error(`Error initializing strategy : ${error}`);
+            logger.error(`Error running strategy : ${error}`);
         }
     }
 }
