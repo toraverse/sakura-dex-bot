@@ -95,6 +95,8 @@ const CANCEL_ORDER_TYPE = {
     ]
 }
 
+const PRICE_EXPONENT = 18;
+
 
 module.exports = {
     BASE_URL,
@@ -111,6 +113,7 @@ module.exports = {
     GetMarketDepthUrl,
     GetBalanceForToken,
     GetPortfolioUrl,
+    PRICE_EXPONENT,
     CHAIN_ID,
     CHAIN_LIST_URL,
     GECKO_TERMINAL_BASE_URL

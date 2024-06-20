@@ -3,6 +3,7 @@ const axios = require('axios');
 require('dotenv').config();
 const constants = require('./constants');
 const logger = require('../strats/lib');
+const { stringify } = require("flatted");
 
 class TegroConnector {
 
@@ -14,6 +15,8 @@ class TegroConnector {
     marketId;
     wallet;
     verifyingContract;
+    basePrecision;
+    quotePrecision;
 
     constructor(marketSymbol, privateKeyVariableName = "PRIVATE_KEY") {
         this.marketSymbol = marketSymbol;
@@ -25,24 +28,32 @@ class TegroConnector {
     async initMarket() {
         //Get the verifying contract address
         try {
+            console.log("constants.CHAIN_LIST_URL ", constants.CHAIN_LIST_URL);
             const chainList = await axios.get(constants.CHAIN_LIST_URL);
             const chainData = chainList.data.data;
             const chainInfo = chainData.filter(item => item.id === constants.CHAIN_ID);
             this.verifyingContract = chainInfo[0].exchange_contract;
         }
         catch (error) {
-            logger.error("Error in initMarket:", error);
+            logger.error("Error in initMarket for fetching chain infor :", error);
         }
 
         try {
             logger.info("Trying to fetch market details for " + this.marketSymbol);
+            console.log(
+              "constants.GetMarketInfoUrl(this.marketSymbol) ",
+              constants.GetMarketInfoUrl(this.marketSymbol)
+            );
             const marketInfoReq = await axios.get(constants.GetMarketInfoUrl(this.marketSymbol));
             const marketData = marketInfoReq.data.data[0];
+            console.log("marketData ", marketData);
             this.baseDecimals = marketData.base_decimal;
             this.quoteDecimals = marketData.quote_decimal;
             this.baseTokenAddress = marketData.base_contract_address;
             this.quoteTokenAddress = marketData.quote_contract_address;
             this.marketId = marketData.id;
+            this.basePrecision = marketData.base_precision;
+            this.quotePrecision = marketData.quote_precision;
             logger.info("Market data fetch success");
             return marketData;
         } catch (error) {
@@ -92,6 +103,9 @@ class TegroConnector {
             throw new Error(`Invalid order side: ${side}`);
         }
 
+        console.log("precisionVolume ", precisionVolume.toString());
+        console.log("precisionPrice ", precisionPrice.toString());
+
         rawData = {
             baseToken: this.baseTokenAddress,
             isBuy: side === 1 ? true : false,
@@ -121,17 +135,22 @@ class TegroConnector {
 
         };
 
-        try {
-            logger.info("Trying to create order");
-            const createOrderRequest = await axios.post(constants.CREATE_ORDER_URL, limit_order);
-            logger.info("order request sent ");
-            return createOrderRequest.data;
-        } catch (error) {
-            logger.error(`Error in creating order : ${JSON.stringify(limit_order)}`);
-            logger.error(`Error in creating order stringified : ${JSON.stringify(error)}`);
-            logger.error(`Error in creating order :  ${error}`);
-            console.log("error in creating order ===> ", error);    
-        }
+let createOrderRequest;
+try {
+  logger.info("Trying to create order");
+  createOrderRequest = await axios.post(
+    constants.CREATE_ORDER_URL,
+    limit_order
+  );
+  logger.info(`order request sent ${JSON.stringify(createOrderRequest)}`);
+  //return createOrderRequest.response.data;
+} catch (error) {
+  logger.error(`Error in creating order json: ${JSON.stringify(limit_order)}`);
+  logger.info(`Order request sent: ${JSON.stringify(createOrderRequest.data)}`);
+  logger.error(`Error in creating order here 1 :  ${error}`);
+  logger.error(`Error in creating order message:  ${error.message}`);
+  console.log(`error in creating order ===>  ${error}`);
+}
     }
 
     generateSalt() {

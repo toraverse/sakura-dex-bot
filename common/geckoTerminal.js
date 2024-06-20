@@ -8,7 +8,15 @@ const baseUrl = constants.GECKO_TERMINAL_BASE_URL;
 const geckoTerminalLib = {
     async getPrice(chain, tokenAddress) {
         try {
-            const url = baseUrl + "/networks/" + chain + "/tokens/" + tokenAddress;
+            console.log("tokenAddress ", tokenAddress);
+            console.log("chain ", chain);
+                        const url =
+                          baseUrl +
+                          "/networks/" +
+                          chain +
+                          "/tokens/" +
+                          tokenAddress;
+
             const response = await axios.get(url);
             if (response.data && response.data.data.attributes && response.data.data.attributes.price_usd) {
                 return parseFloat(response.data.data.attributes.price_usd);
