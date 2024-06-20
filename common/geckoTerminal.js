@@ -10,9 +10,9 @@ const geckoTerminalLib = {
         try {
             console.log("tokenAddress ", tokenAddress);
             console.log("chain ", chain);
-            const url =
-              baseUrl +
-              "/networks/" +
+                        const url =
+                          baseUrl +
+                          "/networks/" +
               "base" +
               "/tokens/" +
               "0x7ED613AB8b2b4c6A781DDC97eA98a666c6437511";
