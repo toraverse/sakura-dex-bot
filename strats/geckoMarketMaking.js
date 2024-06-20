@@ -79,7 +79,7 @@ class GeckoMarketMaking extends BaseStrategy {
 
       console.log("value after toFixed ", value);
 
-      let powFactor = new Decimal(10).pow(18);
+      let powFactor = new Decimal(10).pow(constants.PRICE_EXPONENT);
 
       let result = new Decimal(value);
 
@@ -200,7 +200,7 @@ class GeckoMarketMaking extends BaseStrategy {
       console.log("percentages[index] ", percentages[index]);
       const totalPrice = balance * (percentages[index] / 100);
       console.log("totalPrice ", totalPrice);
-      console.log("calculated quantiy ", 100/0.00000180);
+
       console.log("Number(priceLevel/1e18) ", Number(priceLevel / 1e18));
       const quantity =
         (totalPrice / Number(priceLevel/1e18)) ;
