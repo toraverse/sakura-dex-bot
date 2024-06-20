@@ -3,6 +3,7 @@ const axios = require('axios');
 require('dotenv').config();
 const constants = require('./constants');
 const logger = require('../strats/lib');
+const { stringify } = require("flatted");
 
 class TegroConnector {
 
@@ -141,7 +142,7 @@ class TegroConnector {
             return createOrderRequest.data;
         } catch (error) {
             logger.error(`Error in creating order : ${JSON.stringify(limit_order)}`);
-            logger.error(`Error in creating order stringified : ${JSON.stringify(error)}`);
+            logger.info(`Order request sent: ${JSON.stringify(createOrderRequest.data)}`);
             logger.error(`Error in creating order :  ${error}`);
             console.log(`error in creating order ===>  ${error}`);    
         }
