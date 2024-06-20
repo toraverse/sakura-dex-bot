@@ -137,7 +137,7 @@ class TegroConnector {
         try {
             logger.info("Trying to create order");
             const createOrderRequest = await axios.post(constants.CREATE_ORDER_URL, limit_order);
-            logger.info(`order request sent ${JSON.stringify(createOrderRequest.data)}`);
+            logger.info(`order request sent ${JSON.stringify(createOrderRequest)}`);
             return createOrderRequest.data;
         } catch (error) {
             logger.error(`Error in creating order : ${JSON.stringify(limit_order)}`);

@@ -4,6 +4,7 @@ const TegroConnector = require('../common/tegroConnector');
 const BaseStrategy = require("../common/baseStrategy");
 const logger = require('./lib');
 const Decimal = require("decimal.js");
+const constants = require('../common/constants')
 
 BigInt.prototype.toJSON = function () {
   return this.toString();

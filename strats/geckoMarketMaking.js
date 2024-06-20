@@ -71,7 +71,7 @@ class GeckoMarketMaking extends BaseStrategy {
       let percentage = percentages[i];
 
       let value =
-        basePrice * (1 + ((type === "buy" ? 1 : -1) * percentage) / 100);
+        basePrice * (1 + ((type === "buy" ? -1 : 1) * percentage) / 100);
 
       value = parseFloat(
         parseFloat(value).toFixed(this.tegroConnector.quotePrecision)
