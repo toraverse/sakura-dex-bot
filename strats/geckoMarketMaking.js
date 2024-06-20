@@ -83,9 +83,9 @@ class GeckoMarketMaking extends BaseStrategy {
 
       let result = new Decimal(value);
 
-      let finalPriceValue = result.mul(powFactor);
+      let finalPriceValue = new Decimal(result.mul(powFactor));
 
-      priceLevels.push(finalPriceValue);
+      priceLevels.push(finalPriceValue.toFixed());
     }
 
     // const priceLevels = percentages.map(percentage => BigInt(Math.floor(basePrice * (1 + (type === 'sell' ? 1 : -1) * percentage / 100))));
