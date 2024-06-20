@@ -135,17 +135,22 @@ class TegroConnector {
 
         };
 
-        try {
-            logger.info("Trying to create order");
-            const createOrderRequest = await axios.post(constants.CREATE_ORDER_URL, limit_order);
-            logger.info(`order request sent ${JSON.stringify(createOrderRequest)}`);
-            return createOrderRequest.data;
-        } catch (error) {
-            logger.error(`Error in creating order : ${JSON.stringify(limit_order)}`);
-            logger.info(`Order request sent: ${JSON.stringify(createOrderRequest.data)}`);
-            logger.error(`Error in creating order :  ${error}`);
-            console.log(`error in creating order ===>  ${error}`);    
-        }
+let createOrderRequest;
+try {
+  logger.info("Trying to create order");
+  createOrderRequest = await axios.post(
+    constants.CREATE_ORDER_URL,
+    limit_order
+  );
+  logger.info(`order request sent ${JSON.stringify(createOrderRequest)}`);
+  //return createOrderRequest.response.data;
+} catch (error) {
+  logger.error(`Error in creating order json: ${JSON.stringify(limit_order)}`);
+  logger.info(`Order request sent: ${JSON.stringify(createOrderRequest.data)}`);
+  logger.error(`Error in creating order here 1 :  ${error}`);
+  logger.error(`Error in creating order message:  ${error.message}`);
+  console.log(`error in creating order ===>  ${error}`);
+}
     }
 
     generateSalt() {
