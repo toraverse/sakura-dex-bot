@@ -13,10 +13,10 @@ const geckoTerminalLib = {
                         const url =
                           baseUrl +
                           "/networks/" +
-              "base" +
-              "/tokens/" +
-              "0x7ED613AB8b2b4c6A781DDC97eA98a666c6437511";
-            //   "0x4200000000000000000000000000000000000006";
+                          chain +
+                          "/tokens/" +
+                          tokenAddress;
+
             const response = await axios.get(url);
             if (response.data && response.data.data.attributes && response.data.data.attributes.price_usd) {
                 return parseFloat(response.data.data.attributes.price_usd);
