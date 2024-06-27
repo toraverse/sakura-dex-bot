@@ -125,7 +125,7 @@ class VolumeTrade extends BaseStrategy {
 
             let quotePowerMultiplier = new Decimal(10).pow(constants.PRICE_EXPONENT)
 
-            const finalPrice = new Decimal(calculatedPrice).mul(quotePowerMultiplier);
+            const finalPrice = new Decimal(calculatedPrice).mul(quotePowerMultiplier).toFixed();
 
             logger.info(`final price : ${finalPrice}`)
 
