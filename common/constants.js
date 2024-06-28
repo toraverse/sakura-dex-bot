@@ -31,7 +31,7 @@ function GetActiveOrdersUrl(userAddress) {
 }
 
 function GetMarketInfoUrl(marketSymbol) {
-    return `${BASE_URL}/api/v1/exchange/${CHAIN_ID}/market/list?symbol=${marketSymbol}`;
+    return `${BASE_URL}/api/v1/exchange/${CHAIN_ID}/market/list?market_symbol=${marketSymbol}`;
 }
 
 function GetMarketDepthUrl(marketSymbol) {

@@ -30,7 +30,8 @@ class TegroConnector {
         try {
             console.log("constants.CHAIN_LIST_URL ", constants.CHAIN_LIST_URL);
             const chainList = await axios.get(constants.CHAIN_LIST_URL);
-            const chainData = chainList.data.data;
+
+            const chainData = chainList.data;
             const chainInfo = chainData.filter(item => item.id === constants.CHAIN_ID);
             this.verifyingContract = chainInfo[0].exchange_contract;
         }
@@ -45,7 +46,8 @@ class TegroConnector {
               constants.GetMarketInfoUrl(this.marketSymbol)
             );
             const marketInfoReq = await axios.get(constants.GetMarketInfoUrl(this.marketSymbol));
-            const marketData = marketInfoReq.data.data[0];
+            // console.log('marketInfoReq')
+            const marketData = marketInfoReq.data[0]; // fix this.. change it to 0th index
             console.log("marketData ", marketData);
             this.baseDecimals = marketData.base_decimal;
             this.quoteDecimals = marketData.quote_decimal;
@@ -146,7 +148,7 @@ try {
   //return createOrderRequest.response.data;
 } catch (error) {
   logger.error(`Error in creating order json: ${JSON.stringify(limit_order)}`);
-  logger.info(`Order request sent: ${JSON.stringify(createOrderRequest.data)}`);
+  logger.info(`Order request sent: ${JSON.stringify(createOrderRequest)}`);
   logger.error(`Error in creating order here 1 :  ${error}`);
   logger.error(`Error in creating order message:  ${error.message}`);
   console.log(`error in creating order ===>  ${error}`);
@@ -203,7 +205,7 @@ try {
     async getAllOrders() {
         try {
             const myOrdersRequest = await axios.get(constants.GetUserOrdersURL(this.wallet.address));
-            const filteredOrders = myOrdersRequest.data.filter(item => item.marketId === this.marketId);
+            const filteredOrders = myOrdersRequest.filter(item => item.marketId === this.marketId);
             return filteredOrders;
         } catch (error) {
             logger.error(`Error in getAllOrders :  ${error}`);
@@ -246,8 +248,9 @@ try {
 
     //Uses Tegro for balance
     async getBalanceInFloat(tokenAddress) {
-        const balance = await axios.get(constants.GetBalanceForToken(this.wallet.address, tokenAddress));
-        return Number(balance.data.data);
+        const response = await axios.get(constants.GetBalanceForToken(this.wallet.address, tokenAddress));
+        
+        return Number(response.data);
     }
 
     countOrderTypes(orders) {

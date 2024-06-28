@@ -63,8 +63,9 @@ class VolumeTrade extends BaseStrategy {
             await this.cancelOrders();
 
             //Get the current depth
-            const depth = await this.tegroConnector.getDepth();
-            logger.info(`fetched depth : ${JSON.stringify(depth)}`);
+          const depth = await this.tegroConnector.getDepth();
+          console.log(depth);
+            // logger.info(`fetched depth : ${JSON.stringify(depth)}`);
             //Return if there is no liquidity in the orderbook
             if (
               !(
