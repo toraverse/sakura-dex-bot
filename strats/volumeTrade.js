@@ -51,8 +51,8 @@ class VolumeTrade extends BaseStrategy {
     async cancelOrders() {
         let openOrders = await this.tegroConnector.getActiveOrders();
         for (const order of openOrders) {
-            logger.info(`Cancelling order ${order.orderId}`);
-            await this.tegroConnector.cancelOrder(order.orderId);
+            logger.info(`Cancelling order ${order.order_id}`);
+            await this.tegroConnector.cancelOrder(order.order_id);
         }
     }
 

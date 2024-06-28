@@ -162,7 +162,7 @@ try {
     }
 
     async cancelOrder(orderID) {
-
+        console.log("cancelling for order id ", orderID);
         let cancelOrderObjectSignObject = {
           orderIds: [orderID],
           user: this.wallet.address.toLowerCase(),
@@ -205,7 +205,7 @@ try {
     async getAllOrders() {
         try {
             const myOrdersRequest = await axios.get(constants.GetUserOrdersURL(this.wallet.address));
-            const filteredOrders = myOrdersRequest.filter(item => item.marketId === this.marketId);
+            const filteredOrders = myOrdersRequest.filter(item => item.market_id === this.marketId);
             return filteredOrders;
         } catch (error) {
             logger.error(`Error in getAllOrders :  ${error}`);
@@ -215,7 +215,12 @@ try {
     async getActiveOrders() {
         try {
             const activeOrdersRequest = await axios.get(constants.GetActiveOrdersUrl(this.wallet.address));
-            const filteredOrders = activeOrdersRequest.data.filter(item => item.marketId === this.marketId);
+            // console.log("activeOrdersRequest ", activeOrdersRequest);
+            // console.log("activeOrdersRequest.data ", activeOrdersRequest.data);
+            console.log("this.marketId ", this.marketId);
+            console.log("activeOrdersRequest.data ", activeOrdersRequest.data.length);
+            // console.log("activeOrdersRequest.data ", JSON.stringify(activeOrdersRequest.data));
+            const filteredOrders = activeOrdersRequest.data.filter(item => item.market_id === this.marketId);
             return filteredOrders;
         } catch (error) {
             logger.error(`Error in getActiveOrders : ${error}`);
