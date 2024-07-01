@@ -253,10 +253,12 @@ class GeckoMarketMaking extends BaseStrategy {
     logger.info(`priceLevels for cancelling ${JSON.stringify(priceLevels)}`);
     logger.info(`length of priceLevels for cancelling ${priceLevels.length}`);
     let openOrders = await this.tegroConnector.getActiveOrders();
+    console.log(`openOrders ${JSON.stringify(openOrders)}`);
     let filteredOrders = this.tegroConnector.filterActiveOrdersBySide(
       openOrders,
       type
     );
+    console.log(`filteredOrders ${JSON.stringify(filteredOrders)}`);
     const initialPriceLevels = priceLevels.length;
 
     let minPrice;
@@ -273,9 +275,13 @@ class GeckoMarketMaking extends BaseStrategy {
     let ordersCancelled = 0;
 
     for (const order of filteredOrders) {
-      const orderPrice = BigInt(order.pricePrecision);
+      console.log(`processing cancelling of order ${order.order_id}`);
+      const orderPrice = BigInt(order.price_precision);
+      console.log(`order price ${orderPrice}`);
+      console.log(`minPrice ${minPrice}`);
+      console.log(`maxPrice ${maxPrice}`);
       if (orderPrice < minPrice || orderPrice > maxPrice) {
-        logger.info(`order id for cancelling ===> ${order.orderId}`);
+        logger.info(`order id for cancelling ===> ${order.order_id}`);
         logger.info(
           `Cancelling ${type} order for ${Number(
             order.price
@@ -284,9 +290,9 @@ class GeckoMarketMaking extends BaseStrategy {
           }, ${Number(maxPrice) / 10 ** this.tegroConnector.quoteDecimals}]`
         );
         await this.tegroConnector
-          .cancelOrder(order.orderId)
+          .cancelOrder(order.order_id)
           .catch((err) =>
-            logger.error(`Failed to cancel order ${order.orderId}: `, err)
+            logger.error(`Failed to cancel order ${order.order_id}: `, err)
           );
         ordersCancelled++;
       } else {
@@ -301,7 +307,7 @@ class GeckoMarketMaking extends BaseStrategy {
       }
     }
 
-    logger.info(`${type} Orders to create: ${priceLevels.length}`);
+    logger.info(`${type} Orders to cancel: ${priceLevels.length}`);
     return priceLevels;
   }
 
