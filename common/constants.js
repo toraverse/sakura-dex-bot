@@ -1,6 +1,7 @@
 const BASE_URL = process.env.BASE_URL;
 const CHAIN_ID = parseInt(process.env.CHAIN_ID);
 const verifyingContract = process.env.verifyingContract;
+const ENV = process.env.ENV;
 
 const GECKO_TERMINAL_BASE_URL = process.env.GECKO_TERMINAL_BASE_URL;
 
@@ -116,5 +117,6 @@ module.exports = {
     PRICE_EXPONENT,
     CHAIN_ID,
     CHAIN_LIST_URL,
-    GECKO_TERMINAL_BASE_URL
+    GECKO_TERMINAL_BASE_URL,
+    ENV,
 };

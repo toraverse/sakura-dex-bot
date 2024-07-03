@@ -6,6 +6,8 @@ const constants = require('../common/constants');
 
 const Decimal = require("decimal.js");
 
+const isBotUi = process.env.ENV === "tegro-bot-ui";
+
 
 class GeckoMarketMaking extends BaseStrategy {
   chain;
@@ -27,7 +29,7 @@ class GeckoMarketMaking extends BaseStrategy {
     this.priceStepLevels = config.priceStepLevels;
     this.walletAllocation = config.walletAllocation;
     this.orderRefreshFrequency = config.orderRefreshFrequency;
-    this.tegroConnector = new TegroConnector(this.marketSymbol, config.Wallet);
+    this.tegroConnector = new TegroConnector(this.marketSymbol, isBotUi ? config.pKey : config.Wallet);
     this.type = "geckoMarketMaking";
   }
 

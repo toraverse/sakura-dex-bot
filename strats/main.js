@@ -1,13 +1,21 @@
 const GeckoMarketMaking = require("./geckoMarketMaking");
 const VolumeTrade = require("./volumeTrade");
 
+const constants = require("./constants");
+
 const logger = require("./lib");
 
 const fs = require('fs');
 
-// Read the strategy configurations from the JSON file
-const strategyConfigs = JSON.parse(fs.readFileSync("./config/prod.json", "utf8"));
 let strategies = [];
+let strategyConfigs
+if (constants.ENV === "tegro-bot-ui") {
+    // Get the strategy configurations from the UI
+    strategyConfigs = [JSON.parse(process.argv[2])]
+} else {
+    // Read the strategy configurations from the JSON file
+    strategyConfigs = JSON.parse(fs.readFileSync("./config/prod.json", "utf8"));
+}
 
 BigInt.prototype.toJSON = function () {
   return this.toString();

@@ -10,6 +10,8 @@ const constants = require("./constants");
 const logger = require("../strats/lib");
 const { stringify } = require("flatted");
 
+const isBotUi = process.env.ENV === "tegro-bot-ui";
+
 class TegroConnector {
   marketSymbol;
   baseTokenAddress;
@@ -22,9 +24,9 @@ class TegroConnector {
   basePrecision;
   quotePrecision;
 
-  constructor(marketSymbol, privateKeyVariableName = "PRIVATE_KEY") {
+  constructor(marketSymbol, pKey = "PRIVATE_KEY") {
     this.marketSymbol = marketSymbol;
-    const privateKey = process.env[privateKeyVariableName];
+    const privateKey = isBotUi ? pKey : process.env[pKey];
     const provider = ethers.getDefaultProvider();
     this.wallet = new ethers.Wallet(privateKey, provider);
   }
