@@ -1,7 +1,7 @@
 const GeckoMarketMaking = require("./geckoMarketMaking");
 const VolumeTrade = require("./volumeTrade");
 
-const constants = require("./constants");
+const constants = require("../common/constants");
 
 const logger = require("./lib");
 
